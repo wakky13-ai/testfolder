@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>マリオボンバー</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #87CEEB 0%, #98FB98 100%);
+            font-family: Arial, sans-serif;
+        }
+        
+        .game-container {
+            text-align: center;
+        }
+        
+        .game-title {
+            color: #ff6b35;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-weight: bold;
+        }
+        
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(13, 40px);
+            grid-template-rows: repeat(13, 40px);
+            gap: 0;
+            border: 4px solid #8B4513;
+            background-color: #228B22;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        
+        .cell {
+            width: 40px;
+            height: 40px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .wall {
+            background-color: #8B4513;
+            background-image: linear-gradient(45deg, #A0522D 25%, transparent 25%), 
+                              linear-gradient(-45deg, #A0522D 25%, transparent 25%), 
+                              linear-gradient(45deg, transparent 75%, #A0522D 75%), 
+                              linear-gradient(-45deg, transparent 75%, #A0522D 75%);
+            background-size: 8px 8px;
+        }
+        
+        .destructible {
+            background-color: #CD853F;
+            background-image: linear-gradient(90deg, #DEB887 50%, transparent 50%);
+            background-size: 8px 8px;
+            border: 1px solid #8B7355;
+        }
+        
+        .empty {
+            background-color: #228B22;
+        }
+        
+        .player {
+            background: radial-gradient(circle, #ff6b35 30%, #ff4757 70%);
+            border: 3px solid #2f3542;
+            border-radius: 50%;
+            z-index: 10;
+            position: relative;
+        }
+        
+        .player::before {
+            content: "🐼";
+            font-size: 25px;
+        }
+        
+        .enemy {
+            background: radial-gradient(circle, #ff3838 30%, #c44569 70%);
+            border-radius: 50%;
+            z-index: 5;
+            animation: enemy-float 2s ease-in-out infinite alternate;
+        }
+        
+        .enemy::before {
+            content: "👺";
+            font-size: 22px;
+        }
+        
+        @keyframes enemy-float {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(-3px); }
+        }
+        
+        .bomb {
+            background: radial-gradient(circle, #2c2c54 30%, #e55039 70%);
+            border-radius: 50%;
+            animation: bomb-pulse 0.5s infinite alternate;
+        }
+        
+        .bomb::before {
+            content: "💣";
+            font-size: 20px;
+        }
+        
+        @keyframes bomb-pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.2); }
+        }
+        
+        .explosion {
+            background: radial-gradient(circle, #ffa502 30%, #ff6348 70%);
+            animation: explosion-flash 0.3s;
+        }
+        
+        .explosion::before {
+            content: "💥";
+            font-size: 25px;
+            animation: explosion-rotate 0.3s linear;
+        }
+        
+        @keyframes explosion-flash {
+            0% { background: radial-gradient(circle, #ffa502 30%, #ff6348 70%); }
+            50% { background: radial-gradient(circle, #fff 30%, #ffa502 70%); }
+            100% { background: radial-gradient(circle, #ffa502 30%, #ff6348 70%); }
+        }
+        
+        @keyframes explosion-rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .controls {
+            color: #2f3542;
+            margin-top: 20px;
+            background: rgba(255,255,255,0.8);
+            padding: 15px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+        
+        .controls h3 {
+            margin-bottom: 10px;
+            color: #ff6b35;
+        }
+        
+        .controls p {
+            margin: 5px 0;
+        }
+        
+        .score {
+            color: #2f3542;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            background: rgba(255,255,255,0.8);
+            padding: 10px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1 class="game-title">マリオボンバー ❤️</h1>
+        <div class="score">スコア: <span id="score">0</span> | 敵を倒せ: <span id="enemies">3</span></div>
+        <div id="gameBoard" class="game-board"></div>
+        <div class="controls">
+            <h3>操作方法</h3>
+            <p>矢印キー: 移動</p>
+            <p>スペースキー: 爆弾設置</p>
+            <p>目標: 敵を全て倒そう！</p>
+        </div>
+    </div>
+    
+    <audio id="bgMusic" loop>
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvnEfCCWw6N2CcTcJI3Ku7OiLUQ0PUpbn77BdGQg+ltryxnkpBSl+zPLaizsIGGS57OOYTwwGUKnj8bpjHgg2jdXyx3wqBSJ0xe/eizELElyx6OyrWBUIQ5zd8sFuIAchrem9l" type="audio/wav">
+    </audio>
+    
+    <audio id="explosionSound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRmwJAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YYgJAACBhYiHhYeIhoaGhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWfn5+frq8vrW5v7O2vbCxt62vsKqsr6emrKOkqaCgpJ2eop6dobm8v6ygmIpFAD/8/O/85ez7+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+vj6+uj6+a8g8QqA8Vq=" type="audio/wav">
+    </audio>
+    
+    <audio id="moveSound">
+        <source src="data:audio/wav;base64,UklGRuQDAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YcADAABmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZ" type="audio/wav">
+    </audio>
+    
+    <audio id="bombSound">
+        <source src="data:audio/wav;base64,UklGRuQDAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YcADAADr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vr" type="audio/wav">
+    </audio>
+
+    <script>
+        class Bomberman {
+            constructor() {
+                this.boardSize = 13;
+                this.board = [];
+                this.player = { x: 1, y: 1 };
+                this.enemies = [
+                    { x: 11, y: 11, dx: -1, dy: 0 },
+                    { x: 11, y: 1, dx: 0, dy: 1 },
+                    { x: 1, y: 11, dx: 1, dy: 0 }
+                ];
+                this.bombs = [];
+                this.explosions = [];
+                this.score = 0;
+                this.gameBoard = document.getElementById('gameBoard');
+                
+                this.initBoard();
+                this.render();
+                this.bindEvents();
+                this.startEnemyMovement();
+                this.playBackgroundMusic();
+            }
+            
+            initBoard() {
+                for (let y = 0; y < this.boardSize; y++) {
+                    this.board[y] = [];
+                    for (let x = 0; x < this.boardSize; x++) {
+                        if (x === 0 || y === 0 || x === this.boardSize - 1 || y === this.boardSize - 1 || 
+                            (x % 2 === 0 && y % 2 === 0)) {
+                            this.board[y][x] = 'wall';
+                        } else if (Math.random() < 0.3 && !(x === 1 && y === 1) && !(x === 2 && y === 1) && !(x === 1 && y === 2)) {
+                            this.board[y][x] = 'destructible';
+                        } else {
+                            this.board[y][x] = 'empty';
+                        }
+                    }
+                }
+            }
+            
+            render() {
+                this.gameBoard.innerHTML = '';
+                
+                for (let y = 0; y < this.boardSize; y++) {
+                    for (let x = 0; x < this.boardSize; x++) {
+                        const cell = document.createElement('div');
+                        cell.className = 'cell';
+                        
+                        if (this.board[y][x] === 'wall') {
+                            cell.classList.add('wall');
+                        } else if (this.board[y][x] === 'destructible') {
+                            cell.classList.add('destructible');
+                        } else {
+                            cell.classList.add('empty');
+                        }
+                        
+                        if (this.explosions.some(exp => exp.x === x && exp.y === y)) {
+                            cell.classList.add('explosion');
+                        }
+                        
+                        if (this.bombs.some(bomb => bomb.x === x && bomb.y === y)) {
+                            cell.classList.add('bomb');
+                        }
+                        
+                        if (this.enemies.some(enemy => enemy.x === x && enemy.y === y)) {
+                            cell.classList.add('enemy');
+                        }
+                        
+                        if (this.player.x === x && this.player.y === y) {
+                            cell.classList.add('player');
+                        }
+                        
+                        this.gameBoard.appendChild(cell);
+                    }
+                }
+                
+                document.getElementById('score').textContent = this.score;
+                document.getElementById('enemies').textContent = this.enemies.length;
+                
+                if (this.enemies.length === 0) {
+                    alert('勝利！全ての敵を倒しました！ ❤️');
+                    location.reload();
+                }
+            }
+            
+            movePlayer(dx, dy) {
+                const newX = this.player.x + dx;
+                const newY = this.player.y + dy;
+                
+                if (this.isValidMove(newX, newY)) {
+                    this.player.x = newX;
+                    this.player.y = newY;
+                    this.playSound('moveSound');
+                    this.checkCollisions();
+                    this.render();
+                }
+            }
+            
+            isValidMove(x, y) {
+                if (x < 0 || y < 0 || x >= this.boardSize || y >= this.boardSize) {
+                    return false;
+                }
+                
+                if (this.board[y][x] === 'wall' || this.board[y][x] === 'destructible') {
+                    return false;
+                }
+                
+                if (this.bombs.some(bomb => bomb.x === x && bomb.y === y)) {
+                    return false;
+                }
+                
+                return true;
+            }
+            
+            placeBomb() {
+                const x = this.player.x;
+                const y = this.player.y;
+                
+                if (!this.bombs.some(bomb => bomb.x === x && bomb.y === y)) {
+                    const timerId = setTimeout(() => {
+                        this.explodeBomb(x, y);
+                    }, 3000);
+                    
+                    this.bombs.push({ x, y, timer: 3000, timerId: timerId });
+                    this.playSound('bombSound');
+                    this.render();
+                }
+            }
+            
+            explodeBomb(bombX, bombY) {
+                // 爆発する爆弾を見つけてタイマーをクリア
+                const explodingBomb = this.bombs.find(bomb => bomb.x === bombX && bomb.y === bombY);
+                if (explodingBomb && explodingBomb.timerId) {
+                    clearTimeout(explodingBomb.timerId);
+                }
+                
+                this.bombs = this.bombs.filter(bomb => !(bomb.x === bombX && bomb.y === bombY));
+                this.playSound('explosionSound');
+                
+                const explosionCells = [];
+                explosionCells.push({ x: bombX, y: bombY });
+                
+                const directions = [
+                    { dx: 1, dy: 0 },
+                    { dx: -1, dy: 0 },
+                    { dx: 0, dy: 1 },
+                    { dx: 0, dy: -1 }
+                ];
+                
+                directions.forEach(dir => {
+                    for (let i = 1; i <= 2; i++) {
+                        const x = bombX + dir.dx * i;
+                        const y = bombY + dir.dy * i;
+                        
+                        if (x < 0 || y < 0 || x >= this.boardSize || y >= this.boardSize) {
+                            break;
+                        }
+                        
+                        if (this.board[y][x] === 'wall') {
+                            break;
+                        }
+                        
+                        explosionCells.push({ x, y });
+                        
+                        if (this.board[y][x] === 'destructible') {
+                            this.board[y][x] = 'empty';
+                            this.score += 10;
+                            break;
+                        }
+                    }
+                });
+                
+                // 連鎖爆発チェック
+                const chainBombs = this.bombs.filter(bomb => 
+                    explosionCells.some(cell => cell.x === bomb.x && cell.y === bomb.y)
+                );
+                
+                // 連鎖爆発する爆弾のタイマーをクリア
+                chainBombs.forEach(bomb => {
+                    if (bomb.timerId) {
+                        clearTimeout(bomb.timerId);
+                    }
+                });
+                
+                this.enemies = this.enemies.filter(enemy => {
+                    const hit = explosionCells.some(cell => cell.x === enemy.x && cell.y === enemy.y);
+                    if (hit) {
+                        this.score += 100;
+                    }
+                    return !hit;
+                });
+                
+                if (explosionCells.some(cell => cell.x === this.player.x && cell.y === this.player.y)) {
+                    alert('ゲームオーバー！爆発に巻き込まれました！');
+                    location.reload();
+                }
+                
+                this.explosions = explosionCells;
+                this.render();
+                
+                // 連鎖爆発を0.2秒後に実行
+                if (chainBombs.length > 0) {
+                    setTimeout(() => {
+                        chainBombs.forEach(bomb => {
+                            this.explodeBomb(bomb.x, bomb.y);
+                        });
+                    }, 200);
+                }
+                
+                setTimeout(() => {
+                    this.explosions = [];
+                    this.render();
+                }, 500);
+            }
+            
+            bindEvents() {
+                document.addEventListener('keydown', (e) => {
+                    switch(e.key) {
+                        case 'ArrowUp':
+                            e.preventDefault();
+                            this.movePlayer(0, -1);
+                            break;
+                        case 'ArrowDown':
+                            e.preventDefault();
+                            this.movePlayer(0, 1);
+                            break;
+                        case 'ArrowLeft':
+                            e.preventDefault();
+                            this.movePlayer(-1, 0);
+                            break;
+                        case 'ArrowRight':
+                            e.preventDefault();
+                            this.movePlayer(1, 0);
+                            break;
+                        case ' ':
+                            e.preventDefault();
+                            this.placeBomb();
+                            break;
+                    }
+                });
+            }
+            
+            startEnemyMovement() {
+                setInterval(() => {
+                    this.enemies.forEach(enemy => {
+                        const newX = enemy.x + enemy.dx;
+                        const newY = enemy.y + enemy.dy;
+                        
+                        if (this.isValidEnemyMove(newX, newY)) {
+                            enemy.x = newX;
+                            enemy.y = newY;
+                        } else {
+                            const directions = [
+                                { dx: 1, dy: 0 },
+                                { dx: -1, dy: 0 },
+                                { dx: 0, dy: 1 },
+                                { dx: 0, dy: -1 }
+                            ];
+                            const randomDir = directions[Math.floor(Math.random() * directions.length)];
+                            enemy.dx = randomDir.dx;
+                            enemy.dy = randomDir.dy;
+                        }
+                    });
+                    this.checkCollisions();
+                    this.render();
+                }, 800);
+            }
+            
+            isValidEnemyMove(x, y) {
+                if (x < 0 || y < 0 || x >= this.boardSize || y >= this.boardSize) {
+                    return false;
+                }
+                
+                if (this.board[y][x] === 'wall' || this.board[y][x] === 'destructible') {
+                    return false;
+                }
+                
+                if (this.bombs.some(bomb => bomb.x === x && bomb.y === y)) {
+                    return false;
+                }
+                
+                return true;
+            }
+            
+            checkCollisions() {
+                if (this.enemies.some(enemy => enemy.x === this.player.x && enemy.y === this.player.y)) {
+                    alert('ゲームオーバー！敵に捕まりました！');
+                    location.reload();
+                }
+            }
+            
+            playSound(soundId) {
+                if (soundId === 'explosionSound') {
+                    this.playExplosionSound();
+                } else {
+                    const sound = document.getElementById(soundId);
+                    if (sound) {
+                        sound.currentTime = 0;
+                        sound.play().catch(() => {});
+                    }
+                }
+            }
+            
+            playExplosionSound() {
+                try {
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    
+                    // ノイズ生成
+                    const bufferSize = audioContext.sampleRate * 0.5; // 0.5秒
+                    const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+                    const output = buffer.getChannelData(0);
+                    
+                    for (let i = 0; i < bufferSize; i++) {
+                        output[i] = Math.random() * 2 - 1;
+                    }
+                    
+                    const whiteNoise = audioContext.createBufferSource();
+                    whiteNoise.buffer = buffer;
+                    
+                    // フィルター（低音強調）
+                    const lowPassFilter = audioContext.createBiquadFilter();
+                    lowPassFilter.type = 'lowpass';
+                    lowPassFilter.frequency.setValueAtTime(800, audioContext.currentTime);
+                    lowPassFilter.Q.setValueAtTime(1, audioContext.currentTime);
+                    
+                    // エンベロープ（音量変化）
+                    const gainNode = audioContext.createGain();
+                    gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.8, audioContext.currentTime + 0.01);
+                    gainNode.gain.exponentialRampToValueAtTime(0.3, audioContext.currentTime + 0.1);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                    
+                    // 低周波振動（ドスン感）
+                    const oscillator = audioContext.createOscillator();
+                    oscillator.type = 'sine';
+                    oscillator.frequency.setValueAtTime(60, audioContext.currentTime);
+                    oscillator.frequency.exponentialRampToValueAtTime(30, audioContext.currentTime + 0.1);
+                    
+                    const oscGain = audioContext.createGain();
+                    oscGain.gain.setValueAtTime(0.4, audioContext.currentTime);
+                    oscGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                    
+                    // 接続
+                    whiteNoise.connect(lowPassFilter);
+                    lowPassFilter.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.connect(oscGain);
+                    oscGain.connect(audioContext.destination);
+                    
+                    // 再生
+                    whiteNoise.start(audioContext.currentTime);
+                    whiteNoise.stop(audioContext.currentTime + 0.5);
+                    
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.2);
+                    
+                } catch (error) {
+                    // フォールバック: 元の音
+                    const sound = document.getElementById('explosionSound');
+                    if (sound) {
+                        sound.currentTime = 0;
+                        sound.play().catch(() => {});
+                    }
+                }
+            }
+            
+            playBackgroundMusic() {
+                const bgMusic = document.getElementById('bgMusic');
+                if (bgMusic) {
+                    bgMusic.volume = 0.3;
+                    bgMusic.play().catch(() => {});
+                }
+            }
+        }
+        
+        const game = new Bomberman();
+    </script>
+</body>
+</html>
