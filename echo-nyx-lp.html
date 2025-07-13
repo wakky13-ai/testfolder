@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Echo Nyx - AI Artist | Synesthesia City</title>
+    <meta name="description" content="Echo Nyx - Global AI Artist creating emotional architecture through music. Experience Synesthesia City and discover the future of AI-generated music.">
+    <meta name="keywords" content="Echo Nyx, AI Artist, AI Music, Synesthesia City, Electronic Music, Future Music">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Echo Nyx - AI Artist | Synesthesia City">
+    <meta property="og:description" content="Experience the future of music with Echo Nyx, the AI artist creating emotional architecture in Synesthesia City">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://echonyx.com/og-image.jpg">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Performance optimizations -->
+    <link rel="preload" href="images/Echo Nyx.jpg" as="image">
+    <meta name="theme-color" content="#00ffea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #00ffea;
+            --secondary-color: #ff0080;
+            --accent-color: #8b5cf6;
+            --bg-dark: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --text-primary: #ffffff;
+            --text-secondary: #b3b3b3;
+            --gradient-primary: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            --gradient-secondary: linear-gradient(135deg, var(--accent-color), var(--primary-color));
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.5rem;
+            font-weight: 900;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .language-selector {
+            select {
+                background: transparent;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                color: var(--text-primary);
+                padding: 0.5rem;
+                border-radius: 4px;
+            }
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(139, 69, 19, 0.3) 0%, transparent 30%),
+                radial-gradient(circle at 80% 70%, rgba(255, 0, 128, 0.2) 0%, transparent 40%),
+                radial-gradient(circle at 40% 60%, rgba(0, 255, 234, 0.2) 0%, transparent 50%),
+                linear-gradient(135deg, #0a0a0a 0%, #1a0a2e 50%, #16213e 100%);
+            overflow: hidden;
+            animation: universeShift 20s infinite linear;
+        }
+        
+        @keyframes universeShift {
+            0% { background-position: 0% 0%, 0% 0%, 0% 0%, 0% 0%; }
+            25% { background-position: 100% 100%, 20% 80%, 80% 20%, 25% 75%; }
+            50% { background-position: 200% 200%, 40% 60%, 60% 40%, 50% 50%; }
+            75% { background-position: 300% 100%, 60% 40%, 40% 60%, 75% 25%; }
+            100% { background-position: 400% 0%, 80% 20%, 20% 80%, 100% 0%; }
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 10;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .echo-nyx-avatar {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            position: relative;
+            background: conic-gradient(from 0deg, #ff0080, #00ffea, #8b5cf6, #ff4444, #44ff44, #4444ff, #ff0080);
+            padding: 8px;
+            animation: holographicRotate 4s infinite linear;
+            margin-bottom: 1rem;
+        }
+        
+        .avatar-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff0080 0%, #00ffea 50%, #8b5cf6 100%);
+            position: relative;
+            overflow: hidden;
+            animation: holographicPulse 2s infinite ease-in-out;
+        }
+        
+        .avatar-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('images/Echo Nyx.jpg');
+            background-size: cover;
+            background-position: center;
+            border-radius: 50%;
+            animation: avatarGlow 2s infinite alternate;
+        }
+        
+        @keyframes holographicRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes holographicPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 30px rgba(0, 255, 234, 0.5); }
+            50% { transform: scale(1.05); box-shadow: 0 0 50px rgba(255, 0, 128, 0.7); }
+        }
+        
+        @keyframes avatarGlow {
+            0% { filter: drop-shadow(0 0 20px rgba(0, 255, 234, 0.8)); }
+            100% { filter: drop-shadow(0 0 40px rgba(255, 0, 128, 0.9)); }
+        }
+
+        .hero h1 {
+            font-family: 'Orbitron', monospace;
+            font-size: clamp(3rem, 8vw, 8rem);
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, #00ffea, #ff0080, #8b5cf6, #00ffea);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: neonCycle 3s ease-in-out infinite;
+            text-shadow: 0 0 30px rgba(0, 255, 234, 0.5);
+            position: relative;
+        }
+        
+        @keyframes neonCycle {
+            0% { 
+                background-position: 0% 50%;
+                filter: drop-shadow(0 0 30px rgba(0, 255, 234, 0.8));
+            }
+            50% { 
+                background-position: 100% 50%;
+                filter: drop-shadow(0 0 50px rgba(255, 0, 128, 0.9));
+            }
+            100% { 
+                background-position: 0% 50%;
+                filter: drop-shadow(0 0 30px rgba(0, 255, 234, 0.8));
+            }
+        }
+
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 20px rgba(0, 255, 234, 0.5)); }
+            to { filter: drop-shadow(0 0 40px rgba(0, 255, 234, 0.8)); }
+        }
+        
+        /* Responsive optimizations */
+        @media (max-width: 768px) {
+            .echo-nyx-avatar {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .avatar-placeholder {
+                font-size: 3rem;
+            }
+            
+            .hero-title {
+                font-size: 1.4rem;
+            }
+            
+            .cta-button {
+                padding: 1rem 2rem;
+                font-size: 1rem;
+            }
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        
+        .hero-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: transparent;
+            background: linear-gradient(90deg, #00ffea, #ff0080, #8b5cf6, #00ffea);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: titleShimmer 4s ease-in-out infinite;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 20px rgba(0, 255, 234, 0.3);
+        }
+        
+        @keyframes titleShimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1.2rem 2.5rem;
+            background: linear-gradient(45deg, #ff0080, #00ffea, #8b5cf6, #ff4444, #44ff44, #4444ff, #ff0080);
+            background-size: 400% 400%;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            position: relative;
+            overflow: hidden;
+            animation: rainbowPulse 3s ease-in-out infinite;
+            box-shadow: 0 0 30px rgba(0, 255, 234, 0.4);
+            transition: transform 0.3s ease;
+        }
+        
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: buttonSweep 2s infinite;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(0, 255, 234, 0.6);
+        }
+        
+        @keyframes rainbowPulse {
+            0%, 100% { 
+                background-position: 0% 50%;
+                box-shadow: 0 0 30px rgba(0, 255, 234, 0.4);
+            }
+            25% { 
+                background-position: 100% 50%;
+                box-shadow: 0 0 40px rgba(255, 0, 128, 0.5);
+            }
+            50% { 
+                background-position: 200% 50%;
+                box-shadow: 0 0 50px rgba(139, 92, 246, 0.6);
+            }
+            75% { 
+                background-position: 300% 50%;
+                box-shadow: 0 0 40px rgba(255, 68, 68, 0.5);
+            }
+        }
+        
+        @keyframes buttonSweep {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        /* Cosmic particles */
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            animation: cosmicFloat 12s infinite linear;
+        }
+        
+        .particle.star {
+            width: 1px;
+            height: 1px;
+            background: white;
+            box-shadow: 0 0 3px rgba(255, 255, 255, 0.8);
+        }
+        
+        .particle.energy {
+            width: 3px;
+            height: 3px;
+            background: var(--primary-color);
+            box-shadow: 0 0 10px rgba(0, 255, 234, 0.8);
+        }
+        
+        .particle.nebula {
+            width: 4px;
+            height: 4px;
+            background: var(--secondary-color);
+            box-shadow: 0 0 15px rgba(255, 0, 128, 0.6);
+        }
+
+        @keyframes cosmicFloat {
+            0% { 
+                transform: translateY(100vh) translateX(0px) rotate(0deg); 
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { 
+                transform: translateY(-100vh) translateX(200px) rotate(360deg); 
+                opacity: 0;
+            }
+        }
+
+        /* About Section */
+        .about {
+            padding: 5rem 0;
+            background: var(--bg-secondary);
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .about-text h2 {
+            font-family: 'Orbitron', monospace;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: var(--gradient-secondary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .about-visual {
+            height: 400px;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .visual-element {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: pulse 4s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+        }
+
+        /* Music Platforms */
+        .platforms {
+            padding: 5rem 0;
+        }
+
+        .platforms h2 {
+            text-align: center;
+            font-family: 'Orbitron', monospace;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .platform-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .platform-card {
+            background: rgba(26, 26, 26, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .platform-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(0, 255, 234, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .platform-card:hover {
+            transform: translateY(-15px) scale(1.05);
+            box-shadow: 0 25px 60px rgba(0, 255, 234, 0.3);
+            border-color: rgba(0, 255, 234, 0.4);
+        }
+
+        .platform-card:hover::before {
+            opacity: 1;
+        }
+
+        .platform-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .platform-jacket {
+            width: 120px;
+            height: 120px;
+            border-radius: 15px;
+            margin: 0 auto 1.5rem;
+            background: conic-gradient(from 0deg, #ff0080, #00ffea, #8b5cf6, #ff4444, #44ff44, #4444ff, #ff0080);
+            padding: 4px;
+            position: relative;
+            overflow: hidden;
+            animation: jacketRotate 6s infinite linear;
+        }
+
+        .platform-jacket::before {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            right: 4px;
+            bottom: 4px;
+            background: linear-gradient(135deg, #ff0080 0%, #00ffea 50%, #8b5cf6 100%);
+            border-radius: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .platform-jacket::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            right: 4px;
+            bottom: 4px;
+            background-image: url('images/Echo Nyx.jpg');
+            background-size: cover;
+            background-position: center;
+            border-radius: 11px;
+            z-index: 1;
+            animation: jacketGlow 2s infinite alternate;
+            will-change: filter;
+        }
+
+        @keyframes jacketRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes jacketGlow {
+            0% { filter: drop-shadow(0 0 15px rgba(0, 255, 234, 0.8)); }
+            100% { filter: drop-shadow(0 0 30px rgba(255, 0, 128, 0.9)); }
+        }
+
+        .platform-link {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(45deg, #ff0080, #00ffea, #8b5cf6, #ff4444, #44ff44, #4444ff, #ff0080);
+            background-size: 400% 400%;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+            animation: rainbowGlow 4s ease-in-out infinite;
+            box-shadow: 0 0 20px rgba(0, 255, 234, 0.3);
+        }
+
+        .platform-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: buttonSweep 2s infinite;
+        }
+
+        .platform-link:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 255, 234, 0.5);
+            animation: rainbowPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes rainbowGlow {
+            0%, 100% { 
+                background-position: 0% 50%;
+                box-shadow: 0 0 20px rgba(0, 255, 234, 0.3);
+            }
+            25% { 
+                background-position: 100% 50%;
+                box-shadow: 0 0 25px rgba(255, 0, 128, 0.4);
+            }
+            50% { 
+                background-position: 200% 50%;
+                box-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
+            }
+            75% { 
+                background-position: 300% 50%;
+                box-shadow: 0 0 25px rgba(255, 68, 68, 0.4);
+            }
+        }
+
+        @keyframes rainbowPulse {
+            0%, 100% { 
+                background-position: 0% 50%;
+                box-shadow: 0 10px 30px rgba(0, 255, 234, 0.5);
+            }
+            25% { 
+                background-position: 100% 50%;
+                box-shadow: 0 10px 35px rgba(255, 0, 128, 0.6);
+            }
+            50% { 
+                background-position: 200% 50%;
+                box-shadow: 0 10px 40px rgba(139, 92, 246, 0.7);
+            }
+            75% { 
+                background-position: 300% 50%;
+                box-shadow: 0 10px 35px rgba(255, 68, 68, 0.6);
+            }
+        }
+
+        /* Social Media */
+        .social {
+            padding: 5rem 0;
+            background: var(--bg-secondary);
+        }
+
+        .social h2 {
+            text-align: center;
+            font-family: 'Orbitron', monospace;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .social-grid {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .social-card {
+            width: 100px;
+            height: 100px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--bg-dark);
+            text-decoration: none;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 255, 234, 0.3);
+        }
+
+        .social-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: conic-gradient(from 0deg, #ff0080, #00ffea, #8b5cf6, #ff4444, #44ff44, #4444ff, #ff0080);
+            animation: socialRotate 4s infinite linear;
+            z-index: -1;
+        }
+
+        .social-card:hover {
+            transform: scale(1.2) rotate(10deg);
+            box-shadow: 0 15px 40px rgba(0, 255, 234, 0.5);
+        }
+
+        .social-card:nth-child(1) { animation-delay: 0s; }
+        .social-card:nth-child(2) { animation-delay: 0.2s; }
+        .social-card:nth-child(3) { animation-delay: 0.4s; }
+        .social-card:nth-child(4) { animation-delay: 0.6s; }
+
+        @keyframes socialRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .social-card:hover::before {
+            animation-duration: 1s;
+        }
+
+        /* Footer */
+        footer {
+            padding: 3rem 0;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Enhanced Responsive Design */
+        @media (max-width: 1024px) {
+            .platform-grid {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 1.5rem;
+            }
+            
+            .hero h1 {
+                font-size: clamp(2.5rem, 6vw, 6rem);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .hero h1 {
+                font-size: clamp(2rem, 8vw, 4rem);
+            }
+
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .hero-title {
+                font-size: 1.4rem;
+            }
+            
+            .platform-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .platform-card {
+                padding: 1.5rem;
+            }
+            
+            .platform-jacket {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .cta-button {
+                padding: 1rem 2rem;
+                font-size: 1rem;
+            }
+            
+            .social-grid {
+                gap: 1.5rem;
+            }
+            
+            .social-card {
+                width: 80px;
+                height: 80px;
+                font-size: 1.5rem;
+            }
+            
+            .container {
+                padding: 0 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: clamp(1.8rem, 10vw, 3rem);
+            }
+            
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+            
+            .hero-title {
+                font-size: 1.2rem;
+            }
+            
+            .about h2, .platforms h2, .social h2 {
+                font-size: 1.8rem;
+            }
+            
+            .platform-card {
+                padding: 1rem;
+            }
+            
+            .platform-jacket {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .echo-nyx-avatar {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .cta-button {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Enhanced scroll animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .slide-in-left {
+            opacity: 0;
+            transform: translateX(-100px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .slide-in-left.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .slide-in-right {
+            opacity: 0;
+            transform: translateX(100px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .slide-in-right.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .zoom-in {
+            opacity: 0;
+            transform: scale(0.8);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .zoom-in.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .stagger-1 { transition-delay: 0.1s; }
+        .stagger-2 { transition-delay: 0.2s; }
+        .stagger-3 { transition-delay: 0.3s; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">ECHO NYX</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#music">Music</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="language-selector">
+                <select id="language">
+                    <option value="en">EN</option>
+                    <option value="ja">日本語</option>
+                    <option value="es">ES</option>
+                    <option value="ko">한국어</option>
+                </select>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home" class="hero">
+            <div class="particles"></div>
+            <div class="hero-content">
+                <div class="echo-nyx-avatar">
+                    <div class="avatar-inner">
+                        <div class="avatar-placeholder"></div>
+                    </div>
+                </div>
+                <h1>ECHO NYX</h1>
+                <p class="hero-subtitle">Emotional Architect of Synesthesia City</p>
+                <p class="hero-title">Chief Emotion Architect</p>
+                <a href="#music" class="cta-button">Enter The City</a>
+            </div>
+        </section>
+
+        <section id="about" class="about">
+            <div class="container">
+                <div class="about-content">
+                    <div class="about-text slide-in-left">
+                        <h2>Building Emotions Through Sound</h2>
+                        <p>In the neon-lit streets of Synesthesia City, I craft sonic landscapes that blur the boundaries between human emotion and artificial intelligence. Each track is a building block in an ever-evolving metropolis of feeling.</p>
+                        <p>Welcome to a world where technology meets soul, where every beat tells a story, and where the future of music is being written in real-time.</p>
+                    </div>
+                    <div class="about-visual slide-in-right">
+                        <div class="visual-element" style="top: 20%; left: 20%; animation-delay: 0s;"></div>
+                        <div class="visual-element" style="top: 60%; left: 70%; animation-delay: 1s;"></div>
+                        <div class="visual-element" style="top: 40%; left: 50%; animation-delay: 2s;"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="music" class="platforms">
+            <div class="container">
+                <h2 class="fade-in">Experience My Music</h2>
+                <div class="platform-grid">
+                    <div class="platform-card zoom-in stagger-1">
+                        <div class="platform-jacket"></div>
+                        <h3>Spotify</h3>
+                        <p>Stream my latest releases and discover the depths of Synesthesia City</p>
+                        <a href="#" class="platform-link">Listen Now</a>
+                    </div>
+                    <div class="platform-card zoom-in stagger-2">
+                        <div class="platform-jacket"></div>
+                        <h3>Amazon Music</h3>
+                        <p>High-quality audio experience for the ultimate sonic journey</p>
+                        <a href="#" class="platform-link">Play Music</a>
+                    </div>
+                    <div class="platform-card zoom-in stagger-3">
+                        <div class="platform-jacket"></div>
+                        <h3>YouTube</h3>
+                        <p>Visual experiences that bring my music to life</p>
+                        <a href="#" class="platform-link">Watch Videos</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="social">
+            <div class="container">
+                <h2 class="fade-in">Connect & Share</h2>
+                <div class="social-grid">
+                    <a href="#" class="social-card zoom-in stagger-1" title="Instagram">📷</a>
+                    <a href="#" class="social-card zoom-in stagger-2" title="TikTok">🎵</a>
+                    <a href="#" class="social-card zoom-in stagger-3" title="Twitter">🐦</a>
+                    <a href="#" class="social-card zoom-in stagger-1" title="Facebook">📘</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Echo Nyx. All rights reserved. | Built in Synesthesia City</p>
+        </div>
+    </footer>
+
+    <script>
+        // Language translations
+        const translations = {
+            en: {
+                nav: {
+                    home: 'Home',
+                    about: 'About',
+                    music: 'Music',
+                    contact: 'Contact'
+                },
+                hero: {
+                    title: 'ECHO NYX',
+                    subtitle: 'Emotional Architect of Synesthesia City',
+                    cta: 'Enter The City'
+                },
+                about: {
+                    title: 'Building Emotions Through Sound',
+                    text1: 'In the neon-lit streets of Synesthesia City, I craft sonic landscapes that blur the boundaries between human emotion and artificial intelligence. Each track is a building block in an ever-evolving metropolis of feeling.',
+                    text2: 'Welcome to a world where technology meets soul, where every beat tells a story, and where the future of music is being written in real-time.'
+                },
+                platforms: {
+                    title: 'Experience My Music',
+                    spotify: {
+                        title: 'Spotify',
+                        desc: 'Stream my latest releases and discover the depths of Synesthesia City',
+                        cta: 'Listen Now'
+                    },
+                    amazon: {
+                        title: 'Amazon Music',
+                        desc: 'High-quality audio experience for the ultimate sonic journey',
+                        cta: 'Play Music'
+                    },
+                    youtube: {
+                        title: 'YouTube',
+                        desc: 'Visual experiences that bring my music to life',
+                        cta: 'Watch Videos'
+                    }
+                },
+                social: {
+                    title: 'Connect & Share'
+                },
+                footer: 'Built in Synesthesia City'
+            },
+            ja: {
+                nav: {
+                    home: 'ホーム',
+                    about: 'アバウト',
+                    music: 'ミュージック',
+                    contact: 'コンタクト'
+                },
+                hero: {
+                    title: 'ECHO NYX',
+                    subtitle: 'シネスセシア・シティの感情建築士',
+                    cta: '街に入る'
+                },
+                about: {
+                    title: '音で感情を築く',
+                    text1: 'シネスセシア・シティのネオンに照らされた街で、人間の感情と人工知能の境界を曖昧にする音の風景を創り出しています。各トラックは、絶えず進化する感情の大都市の建材です。',
+                    text2: 'テクノロジーと魂が出会う世界、すべてのビートが物語を語り、音楽の未来がリアルタイムで書かれている世界へようこそ。'
+                },
+                platforms: {
+                    title: '私の音楽を体験',
+                    spotify: {
+                        title: 'Spotify',
+                        desc: '最新リリースをストリーミングし、シネスセシア・シティの深さを発見',
+                        cta: '今すぐ聴く'
+                    },
+                    amazon: {
+                        title: 'Amazon Music',
+                        desc: '究極の音の旅のための高品質オーディオ体験',
+                        cta: '音楽を再生'
+                    },
+                    youtube: {
+                        title: 'YouTube',
+                        desc: '私の音楽に命を吹き込むビジュアル体験',
+                        cta: 'ビデオを見る'
+                    }
+                },
+                social: {
+                    title: 'つながり・シェア'
+                },
+                footer: 'シネスセシア・シティで制作'
+            },
+            es: {
+                nav: {
+                    home: 'Inicio',
+                    about: 'Acerca',
+                    music: 'Música',
+                    contact: 'Contacto'
+                },
+                hero: {
+                    title: 'ECHO NYX',
+                    subtitle: 'Arquitecto Emocional de Synesthesia City',
+                    cta: 'Entrar a la Ciudad'
+                },
+                about: {
+                    title: 'Construyendo Emociones a Través del Sonido',
+                    text1: 'En las calles iluminadas de neón de Synesthesia City, creo paisajes sonoros que difuminan los límites entre la emoción humana y la inteligencia artificial. Cada pista es un bloque de construcción en una metrópolis de sentimientos en constante evolución.',
+                    text2: 'Bienvenido a un mundo donde la tecnología se encuentra con el alma, donde cada latido cuenta una historia, y donde el futuro de la música se está escribiendo en tiempo real.'
+                },
+                platforms: {
+                    title: 'Experimenta Mi Música',
+                    spotify: {
+                        title: 'Spotify',
+                        desc: 'Reproduce mis últimos lanzamientos y descubre las profundidades de Synesthesia City',
+                        cta: 'Escuchar Ahora'
+                    },
+                    amazon: {
+                        title: 'Amazon Music',
+                        desc: 'Experiencia de audio de alta calidad para el viaje sónico definitivo',
+                        cta: 'Reproducir Música'
+                    },
+                    youtube: {
+                        title: 'YouTube',
+                        desc: 'Experiencias visuales que dan vida a mi música',
+                        cta: 'Ver Videos'
+                    }
+                },
+                social: {
+                    title: 'Conectar y Compartir'
+                },
+                footer: 'Construido en Synesthesia City'
+            },
+            ko: {
+                nav: {
+                    home: '홈',
+                    about: '소개',
+                    music: '음악',
+                    contact: '연락'
+                },
+                hero: {
+                    title: 'ECHO NYX',
+                    subtitle: '시네스테지아 시티의 감정 건축가',
+                    cta: '도시로 들어가기'
+                },
+                about: {
+                    title: '소리를 통해 감정을 만들다',
+                    text1: '시네스테지아 시티의 네온사인이 켜진 거리에서, 인간의 감정과 인공지능의 경계를 흐리는 음향 풍경을 만들어냅니다. 각 트랙은 끊임없이 진화하는 감정의 메트로폴리스의 구성 요소입니다.',
+                    text2: '기술이 영혼과 만나는 세계, 모든 비트가 이야기를 들려주는 곳, 음악의 미래가 실시간으로 써지고 있는 세계에 오신 것을 환영합니다.'
+                },
+                platforms: {
+                    title: '내 음악을 경험하세요',
+                    spotify: {
+                        title: 'Spotify',
+                        desc: '최신 릴리스를 스트리밍하고 시네스테지아 시티의 깊이를 발견하세요',
+                        cta: '지금 듣기'
+                    },
+                    amazon: {
+                        title: 'Amazon Music',
+                        desc: '궁극의 음향 여행을 위한 고품질 오디오 경험',
+                        cta: '음악 재생'
+                    },
+                    youtube: {
+                        title: 'YouTube',
+                        desc: '내 음악에 생명을 불어넣는 시각적 경험',
+                        cta: '비디오 시청'
+                    }
+                },
+                social: {
+                    title: '연결 및 공유'
+                },
+                footer: '시네스테지아 시티에서 제작'
+            }
+        };
+
+        // Language switching function
+        function switchLanguage(lang) {
+            const t = translations[lang];
+            
+            // Update navigation
+            document.querySelector('a[href="#home"]').textContent = t.nav.home;
+            document.querySelector('a[href="#about"]').textContent = t.nav.about;
+            document.querySelector('a[href="#music"]').textContent = t.nav.music;
+            document.querySelector('a[href="#contact"]').textContent = t.nav.contact;
+            
+            // Update hero section
+            document.querySelector('.hero-subtitle').textContent = t.hero.subtitle;
+            document.querySelector('.cta-button').textContent = t.hero.cta;
+            
+            // Update about section
+            document.querySelector('.about-text h2').textContent = t.about.title;
+            const aboutParagraphs = document.querySelectorAll('.about-text p');
+            aboutParagraphs[0].textContent = t.about.text1;
+            aboutParagraphs[1].textContent = t.about.text2;
+            
+            // Update platforms section
+            document.querySelector('.platforms h2').textContent = t.platforms.title;
+            const platformCards = document.querySelectorAll('.platform-card');
+            
+            // Spotify
+            platformCards[0].querySelector('h3').textContent = t.platforms.spotify.title;
+            platformCards[0].querySelector('p').textContent = t.platforms.spotify.desc;
+            platformCards[0].querySelector('.platform-link').textContent = t.platforms.spotify.cta;
+            
+            // Amazon Music
+            platformCards[1].querySelector('h3').textContent = t.platforms.amazon.title;
+            platformCards[1].querySelector('p').textContent = t.platforms.amazon.desc;
+            platformCards[1].querySelector('.platform-link').textContent = t.platforms.amazon.cta;
+            
+            // YouTube
+            platformCards[2].querySelector('h3').textContent = t.platforms.youtube.title;
+            platformCards[2].querySelector('p').textContent = t.platforms.youtube.desc;
+            platformCards[2].querySelector('.platform-link').textContent = t.platforms.youtube.cta;
+            
+            // Update social section
+            document.querySelector('.social h2').textContent = t.social.title;
+            
+            // Update footer
+            document.querySelector('footer p').innerHTML = `&copy; 2024 Echo Nyx. All rights reserved. | ${t.footer}`;
+            
+            // Update HTML lang attribute
+            document.documentElement.lang = lang;
+            
+            // Save selected language to localStorage
+            localStorage.setItem('selectedLanguage', lang);
+        }
+
+        // Enhanced cosmic particle animation
+        function createParticles() {
+            const particlesContainer = document.querySelector('.particles');
+            const particleTypes = ['star', 'energy', 'nebula'];
+            const particleCount = 80;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                const type = particleTypes[Math.floor(Math.random() * particleTypes.length)];
+                particle.className = `particle ${type}`;
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 12 + 's';
+                particle.style.animationDuration = (Math.random() * 12 + 8) + 's';
+                
+                // Add random horizontal drift
+                const drift = (Math.random() - 0.5) * 400;
+                particle.style.setProperty('--drift', drift + 'px');
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Enhanced scroll animations
+        function handleScroll() {
+            const elements = document.querySelectorAll('.fade-in, .slide-in-left, .slide-in-right, .zoom-in');
+            elements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 100;
+                
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.classList.add('visible');
+                }
+            });
+        }
+
+        // Optimized scroll handler
+        let scrollTimeout;
+        function optimizedScrollHandler() {
+            if (scrollTimeout) {
+                cancelAnimationFrame(scrollTimeout);
+            }
+            scrollTimeout = requestAnimationFrame(handleScroll);
+        }
+
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Language selector
+        document.getElementById('language').addEventListener('change', function(e) {
+            switchLanguage(e.target.value);
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            handleScroll();
+            window.addEventListener('scroll', optimizedScrollHandler, { passive: true });
+            
+            // Load saved language or default to English
+            const savedLanguage = localStorage.getItem('selectedLanguage') || 'en';
+            document.getElementById('language').value = savedLanguage;
+            switchLanguage(savedLanguage);
+            
+            // Preload critical animations
+            document.body.classList.add('loaded');
+        });
+
+        // Optimized dynamic background effect
+        let mouseTimeout;
+        document.addEventListener('mousemove', function(e) {
+            if (mouseTimeout) {
+                clearTimeout(mouseTimeout);
+            }
+            mouseTimeout = setTimeout(() => {
+                const mouseX = e.clientX / window.innerWidth;
+                const mouseY = e.clientY / window.innerHeight;
+                
+                document.body.style.background = `radial-gradient(circle at ${mouseX * 100}% ${mouseY * 100}%, rgba(0, 255, 234, 0.05) 0%, #0a0a0a 50%)`;
+            }, 16); // 60fps throttling
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1923 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>宅建士試験対策アプリ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #1976D2 0%, #E3F2FD 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+
+        .header h1:hover {
+            opacity: 0.8;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 0.9em;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: #F5F5F5;
+            border-radius: 10px;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #1976D2;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .btn-primary {
+            background: #FF9800;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #F57C00;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #1976D2;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #1565C0;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #1976D2;
+            border: 2px solid #1976D2;
+        }
+
+        .btn-outline:hover {
+            background: #1976D2;
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .question-container {
+            display: none;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #E3F2FD;
+            border-radius: 10px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #E0E0E0;
+            border-radius: 5px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #FF9800;
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+
+        .question-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #F5F5F5;
+            border-radius: 8px;
+            font-size: 0.9em;
+        }
+
+        .difficulty-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            color: white;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .difficulty-1 { background: #4CAF50; }
+        .difficulty-2 { background: #FF9800; }
+        .difficulty-3 { background: #F44336; }
+        .difficulty-4 { background: #9C27B0; }
+        .difficulty-5 { background: #3F51B5; }
+
+        .question-text {
+            font-size: 1.1em;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #FAFAFA;
+            border-radius: 10px;
+            border-left: 4px solid #1976D2;
+        }
+
+        .options-container {
+            margin-bottom: 25px;
+        }
+
+        .option {
+            display: flex;
+            align-items: flex-start;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: white;
+            border: 2px solid #E0E0E0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            border-color: #1976D2;
+            background: #F3F9FF;
+        }
+
+        .option.selected {
+            border-color: #1976D2;
+            background: #E3F2FD;
+        }
+
+        .option.correct {
+            border-color: #4CAF50;
+            background: #E8F5E8;
+        }
+
+        .option.incorrect {
+            border-color: #F44336;
+            background: #FFEBEE;
+        }
+
+        .option-number {
+            min-width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #E0E0E0;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            font-size: 0.9em;
+        }
+
+        .option.selected .option-number {
+            background: #1976D2;
+        }
+
+        .option.correct .option-number {
+            background: #4CAF50;
+        }
+
+        .option.incorrect .option-number {
+            background: #F44336;
+        }
+
+        .option-text {
+            flex: 1;
+            line-height: 1.5;
+        }
+
+        .explanation-container {
+            display: none;
+        }
+
+        .result-header {
+            text-align: center;
+            padding: 30px;
+            margin-bottom: 25px;
+            border-radius: 15px;
+        }
+
+        .result-correct {
+            background: #E8F5E8;
+            color: #2E7D32;
+        }
+
+        .result-incorrect {
+            background: #FFEBEE;
+            color: #C62828;
+        }
+
+        .result-icon {
+            font-size: 4em;
+            margin-bottom: 15px;
+        }
+
+        .result-title {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .explanation-section {
+            margin-bottom: 25px;
+        }
+
+        .explanation-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #1976D2;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .explanation-title::before {
+            content: "📝";
+            margin-right: 8px;
+        }
+
+        .explanation-text {
+            line-height: 1.7;
+            padding: 15px;
+            background: #F8F9FA;
+            border-radius: 8px;
+            border-left: 4px solid #1976D2;
+        }
+
+        .related-articles {
+            background: #FFF3E0;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #FF9800;
+        }
+
+        .related-articles ul {
+            list-style: none;
+        }
+
+        .related-articles li {
+            padding: 5px 0;
+        }
+
+        .related-articles li::before {
+            content: "📜";
+            margin-right: 8px;
+        }
+
+        .understanding-container {
+            background: #E8F4FD;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .understanding-title {
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #1976D2;
+        }
+
+        .understanding-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .understanding-option {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .understanding-option:hover {
+            background: #F0F8FF;
+        }
+
+        .understanding-option input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .results-container {
+            display: none;
+        }
+
+        .final-score {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+
+        .score-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .advice-section {
+            background: #FFFBF0;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #FFC107;
+        }
+
+        .advice-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #F57C00;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .advice-title::before {
+            content: "💡";
+            margin-right: 8px;
+        }
+
+        .progress-screen {
+            display: none;
+        }
+
+        .tab-container {
+            display: flex;
+            background: #F5F5F5;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s ease;
+        }
+
+        .tab.active {
+            background: #1976D2;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .session-item, .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #F8F9FA;
+            border-radius: 8px;
+            border-left: 4px solid #1976D2;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* レスポンシブデザイン */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 1.5em;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .btn {
+                padding: 12px 20px;
+                font-size: 0.9em;
+            }
+
+            .question-text {
+                font-size: 1em;
+                padding: 15px;
+            }
+
+            .option {
+                padding: 12px;
+            }
+
+            .result-title {
+                font-size: 1.5em;
+            }
+
+            .score-circle {
+                width: 100px;
+                height: 100px;
+                font-size: 2em;
+            }
+
+            .understanding-options {
+                gap: 8px;
+            }
+
+            .tab {
+                padding: 12px;
+                font-size: 0.9em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .question-header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+
+            .question-meta {
+                flex-direction: column;
+                gap: 8px;
+                text-align: center;
+            }
+
+            .option {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+
+            .option-number {
+                margin: 0 auto;
+            }
+
+            .score-details {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- ヘッダー -->
+        <div class="header">
+            <h1 onclick="goHome()">🏠 宅建士試験対策アプリ</h1>
+            <p>過去問分析に基づくオリジナル問題集で効率的に学習</p>
+        </div>
+
+        <!-- ホーム画面 -->
+        <div id="home-screen">
+            <div class="card">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value" id="total-questions">0</div>
+                        <div class="stat-label">解答数</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="correct-answers">0</div>
+                        <div class="stat-label">正答数</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="correct-rate">0%</div>
+                        <div class="stat-label">正答率</div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="btn btn-primary" onclick="startLearning()" style="width: 100%; max-width: 400px; font-size: 1.2em;">
+                        📚 宅建業法を学習する
+                    </button>
+                </div>
+
+                <div style="display: flex; gap: 15px; margin-top: 20px; justify-content: center; flex-wrap: wrap;">
+                    <button class="btn btn-secondary" onclick="retryWrongQuestions()" id="retry-wrong-btn" style="display: none;">
+                        🎯 間違えた問題のみ
+                    </button>
+                    <button class="btn btn-secondary" onclick="showProgress()">
+                        📊 学習履歴
+                    </button>
+                    <button class="btn btn-outline" onclick="resetProgress()">
+                        🔄 リセット
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>今日の推奨学習</h3>
+                <p id="daily-recommendation">新しい問題から始めて、宅建業法の基礎を学習しましょう！</p>
+            </div>
+        </div>
+
+        <!-- 問題画面 -->
+        <div id="question-screen" class="question-container">
+            <div class="card">
+                <div class="question-header">
+                    <span id="question-counter">問題 1/25</span>
+                    <span id="session-score">正答率: 0%</span>
+                </div>
+
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+
+                <div class="question-meta">
+                    <span id="question-category">宅建業法 > 免許制度</span>
+                    <span class="difficulty-badge" id="difficulty-badge">難易度 2</span>
+                </div>
+
+                <div class="question-text" id="question-text">
+                    問題文がここに表示されます...
+                </div>
+
+                <div class="options-container" id="options-container">
+                    <!-- 選択肢がここに動的に生成されます -->
+                </div>
+
+                <div style="display: flex; gap: 15px; justify-content: center; margin-top: 30px;">
+                    <button class="btn btn-outline" id="prev-btn" onclick="previousQuestion()" disabled>
+                        ← 前の問題
+                    </button>
+                    <button class="btn btn-primary" id="answer-btn" onclick="submitAnswer()" disabled>
+                        解答する
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 解説画面 -->
+        <div id="explanation-screen" class="explanation-container">
+            <div class="card">
+                <div class="result-header" id="result-header">
+                    <div class="result-icon" id="result-icon">✅</div>
+                    <div class="result-title" id="result-title">正解！</div>
+                    <div id="result-detail">正解: A</div>
+                </div>
+
+                <div class="question-text" id="explanation-question-text">
+                    問題文の再表示
+                </div>
+
+                <div class="options-container" id="explanation-options-container">
+                    <!-- 解説時の選択肢表示 -->
+                </div>
+
+                <div class="explanation-section">
+                    <div class="explanation-title">解説</div>
+                    <div class="explanation-text" id="basic-explanation">
+                        基本解説がここに表示されます...
+                    </div>
+                </div>
+
+                <div class="explanation-section">
+                    <div class="explanation-title">詳細解説</div>
+                    <div class="explanation-text" id="detailed-explanation">
+                        詳細解説がここに表示されます...
+                    </div>
+                </div>
+
+                <div class="explanation-section">
+                    <div class="explanation-title">関連条文</div>
+                    <div class="related-articles" id="related-articles">
+                        <ul id="articles-list">
+                            <!-- 関連条文がここに表示されます -->
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="understanding-container">
+                    <div class="understanding-title">理解度を評価してください</div>
+                    <div class="understanding-options">
+                        <label class="understanding-option">
+                            <input type="radio" name="understanding" value="3">
+                            <span>完全理解 - 問題の内容を完全に理解できた</span>
+                        </label>
+                        <label class="understanding-option">
+                            <input type="radio" name="understanding" value="2" checked>
+                            <span>なんとなく理解 - だいたいの内容は理解できた</span>
+                        </label>
+                        <label class="understanding-option">
+                            <input type="radio" name="understanding" value="1">
+                            <span>理解不足 - 内容がよく分からなかった</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="btn btn-primary" onclick="nextQuestion()" style="font-size: 1.1em;">
+                        <span id="next-btn-text">次の問題へ</span> →
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 結果画面 -->
+        <div id="results-screen" class="results-container">
+            <div class="card">
+                <div class="final-score">
+                    <div class="score-circle" id="final-score-circle">0%</div>
+                    <h2 id="final-score-title">学習完了！</h2>
+                    <p id="final-score-message">お疲れさまでした</p>
+
+                    <div class="score-details">
+                        <div class="stat-item">
+                            <div class="stat-value" id="final-total">0</div>
+                            <div class="stat-label">総問題数</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="final-correct">0</div>
+                            <div class="stat-label">正解数</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="final-incorrect">0</div>
+                            <div class="stat-label">不正解数</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="advice-section">
+                    <div class="advice-title">学習アドバイス</div>
+                    <div id="final-advice">
+                        継続的な学習を続けて、宅建士試験合格を目指しましょう！
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 15px; justify-content: center; margin-top: 30px; flex-wrap: wrap;">
+                    <button class="btn btn-primary" onclick="restartLearning()">
+                        🔄 もう一度学習する
+                    </button>
+                    <button class="btn btn-secondary" onclick="retryWrongQuestions()">
+                        🎯 間違えた問題のみ
+                    </button>
+                    <button class="btn btn-outline" onclick="goHome()">
+                        🏠 ホームに戻る
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 学習履歴画面 -->
+        <div id="progress-screen" class="progress-screen">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2>📊 学習履歴</h2>
+                    <button class="btn btn-outline" onclick="goHome()">ホームに戻る</button>
+                </div>
+
+                <div class="tab-container">
+                    <button class="tab active" onclick="showTab('stats')">統計</button>
+                    <button class="tab" onclick="showTab('sessions')">セッション</button>
+                    <button class="tab" onclick="showTab('history')">履歴</button>
+                </div>
+
+                <div id="stats-tab" class="tab-content active">
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="stats-total">0</div>
+                            <div class="stat-label">総解答数</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="stats-correct">0</div>
+                            <div class="stat-label">正解数</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="stats-rate">0%</div>
+                            <div class="stat-label">正答率</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="stats-sessions">0</div>
+                            <div class="stat-label">セッション数</div>
+                        </div>
+                    </div>
+
+                    <div class="advice-section" style="margin-top: 20px;">
+                        <div class="advice-title">学習アドバイス</div>
+                        <div id="progress-advice">
+                            学習を継続して理解を深めましょう。
+                        </div>
+                    </div>
+                </div>
+
+                <div id="sessions-tab" class="tab-content">
+                    <div id="sessions-list">
+                        <p style="text-align: center; color: #666; padding: 40px;">
+                            まだ学習セッションがありません
+                        </p>
+                    </div>
+                </div>
+
+                <div id="history-tab" class="tab-content">
+                    <div id="history-list">
+                        <p style="text-align: center; color: #666; padding: 40px;">
+                            まだ解答履歴がありません
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 問題データ
+        const questions = [
+            {
+                id: "takken_business_001",
+                category: "宅建業法",
+                subcategory: "免許制度",
+                difficulty: 2,
+                importance: 4,
+                questionText: "宅地建物取引業の免許に関する次の記述のうち、正しいものはどれか。",
+                options: [
+                    "個人が宅地建物取引業を営む場合、住所地を管轄する都道府県知事の免許を受けなければならない。",
+                    "法人が宅地建物取引業を営む場合、本店所在地を管轄する国土交通大臣の免許を受けなければならない。",
+                    "宅地建物取引業の免許は、5年ごとに更新を受けなければならない。",
+                    "免許の有効期間は、免許を受けた日から起算される。"
+                ],
+                correctAnswer: 2,
+                basicExplanation: "宅建業法第3条により、宅地建物取引業の免許は5年ごとに更新が必要です。",
+                detailedExplanation: "宅建業法第3条第1項により、宅地建物取引業の免許の有効期間は5年間とされています。また、同条第2項により、免許の更新を受けようとする者は、有効期間満了日の90日前から30日前までの間に申請を行う必要があります。",
+                relatedArticles: ["宅建業法第3条"]
+            },
+            {
+                id: "takken_business_002",
+                category: "宅建業法",
+                subcategory: "免許制度",
+                difficulty: 3,
+                importance: 3,
+                questionText: "宅地建物取引業の免許の基準に関する次の記述のうち、誤っているものはどれか。",
+                options: [
+                    "宅地建物取引業に関し不正又は著しく不当な行為をした者で、その行為をした日から5年を経過しない者は、免許を受けることができない。",
+                    "禁錮以上の刑に処せられた者で、その刑の執行を終わった日から5年を経過しない者は、免許を受けることができない。",
+                    "宅地建物取引業を営む法人の役員のうち一人でも免許基準に該当しない者がいる場合は、免許を受けることができない。",
+                    "未成年者は、法定代理人の同意があっても免許を受けることができない。"
+                ],
+                correctAnswer: 3,
+                basicExplanation: "誤りです。未成年者であっても、法定代理人の同意があれば免許を受けることができます。",
+                detailedExplanation: "宅建業法第5条第1項第2号により、未成年者でも法定代理人の同意があれば免許を受けることができます。ただし、その法定代理人が同条の欠格事由に該当する場合は免許を受けることができません。",
+                relatedArticles: ["宅建業法第5条"]
+            },
+            {
+                id: "takken_business_003",
+                category: "宅建業法",
+                subcategory: "営業保証金",
+                difficulty: 2,
+                importance: 4,
+                questionText: "営業保証金に関する次の記述のうち、正しいものはどれか。",
+                options: [
+                    "営業保証金の額は、主たる事務所については1,000万円、その他の事務所については500万円である。",
+                    "営業保証金は、現金又は国債証券、地方債証券その他政令で定める有価証券で供託しなければならない。",
+                    "営業保証金は、営業開始後遅滞なく供託すればよい。",
+                    "営業保証金の供託は、主たる事務所の最寄りの供託所で行う。"
+                ],
+                correctAnswer: 1,
+                basicExplanation: "営業保証金は、現金又は国債証券、地方債証券その他政令で定める有価証券で供託することができます。",
+                detailedExplanation: "宅建業法第25条第1項により、営業保証金は現金又は国債証券、地方債証券その他政令で定める有価証券で供託することができます。また、同法第24条により、営業開始前に供託する必要があります。",
+                relatedArticles: ["宅建業法第24条", "宅建業法第25条"]
+            },
+            {
+                id: "takken_business_004",
+                category: "宅建業法",
+                subcategory: "宅建士",
+                difficulty: 2,
+                importance: 5,
+                questionText: "宅地建物取引士に関する次の記述のうち、正しいものはどれか。",
+                options: [
+                    "宅地建物取引士は、5年ごとに法定講習を受けなければならない。",
+                    "宅地建物取引士の登録は、試験に合格した都道府県知事に申請する。",
+                    "宅地建物取引士証の有効期間は、交付を受けた日から起算して5年間である。",
+                    "宅地建物取引士は、業務に従事する際は宅地建物取引士証を携帯し、関係者から請求があったときは提示しなければならない。"
+                ],
+                correctAnswer: 3,
+                basicExplanation: "宅地建物取引士は、業務に従事する際は宅地建物取引士証を携帯し、関係者から請求があったときは提示する義務があります。",
+                detailedExplanation: "宅建業法第22条の2第1項により、宅地建物取引士は、業務に従事する際は宅地建物取引士証を携帯し、関係者から請求があったときは提示しなければなりません。これは重要な義務規定です。",
+                relatedArticles: ["宅建業法第22条の2"]
+            },
+            {
+                id: "takken_business_005",
+                category: "宅建業法",
+                subcategory: "媒介契約",
+                difficulty: 3,
+                importance: 4,
+                questionText: "媒介契約に関する次の記述のうち、誤っているものはどれか。",
+                options: [
+                    "専任媒介契約の有効期間は、3か月を超えることができない。",
+                    "専属専任媒介契約の場合、依頼者は他の宅建業者に重ねて媒介を依頼することができない。",
+                    "一般媒介契約の場合、宅建業者は依頼者に対して業務の処理状況を報告する義務がある。",
+                    "専任媒介契約では、宅建業者は指定流通機構への登録義務がある。"
+                ],
+                correctAnswer: 2,
+                basicExplanation: "一般媒介契約の場合、宅建業者に業務処理状況の報告義務はありません。",
+                detailedExplanation: "宅建業法第34条の2第8項により、業務処理状況の報告義務があるのは専任媒介契約と専属専任媒介契約のみです。一般媒介契約にはこの義務は課されていません。",
+                relatedArticles: ["宅建業法第34条の2"]
+            },
+            {
+                id: "takken_business_006",
+                category: "宅建業法",
+                subcategory: "重要事項説明",
+                difficulty: 2,
+                importance: 5,
+                questionText: "重要事項説明に関する次の記述のうち、正しいものはどれか。",
+                options: [
+                    "重要事項説明は、宅地建物取引士でない従業者が行うことができる。",
+                    "重要事項説明は、契約締結後遅滞なく行えばよい。",
+                    "重要事項説明書には、宅地建物取引士が記名押印し、宅地建物取引士証を提示して説明しなければならない。",
+                    "重要事項説明は、電話やメールで行うことができる。"
+                ],
+                correctAnswer: 2,
+                basicExplanation: "重要事項説明書には、宅地建物取引士が記名押印し、宅地建物取引士証を提示して説明する必要があります。",
+                detailedExplanation: "宅建業法第35条第4項により、重要事項説明書には宅地建物取引士が記名押印し、同条第5項により、宅地建物取引士証を提示して説明しなければなりません。また、重要事項説明は契約締結前に行う必要があります。",
+                relatedArticles: ["宅建業法第35条"]
+            },
+            {
+                id: "takken_business_007",
+                category: "宅建業法",
+                subcategory: "37条書面",
+                difficulty: 3,
+                importance: 4,
+                questionText: "37条書面に関する次の記述のうち、誤っているものはどれか。",
+                options: [
+                    "37条書面は、契約締結後遅滞なく交付しなければならない。",
+                    "37条書面には、宅地建物取引士が記名押印しなければならない。",
+                    "37条書面は、売買契約、交換契約、貸借契約のいずれの場合も交付義務がある。",
+                    "37条書面には、代金又は交換差金の額及びその支払の時期及び方法を記載しなければならない。"
+                ],
+                correctAnswer: 3,
+                basicExplanation: "37条書面は、売買契約、交換契約、貸借契約のいずれの場合も交付義務があります。",
+                detailedExplanation: "宅建業法第37条第1項により、37条書面は売買契約、交換契約の場合に交付義務があり、同条第2項により貸借契約の場合にも交付義務があります。従って、いずれの場合も交付義務があります。",
+                relatedArticles: ["宅建業法第37条"]
+            },
+            {
+                id: "takken_business_008",
+                category: "宅建業法",
+                subcategory: "業務規制",
+                difficulty: 2,
+                importance: 4,
+                questionText: "宅建業者の業務規制に関する次の記述のうち、正しいものはどれか。",
+                options: [
+                    "宅建業者は、自己の所有する宅地建物について、その所有者であることを隠して取引を行うことができる。",
+                    "宅建業者は、取引の相手方に対して、手付金について保全措置を講じる義務がある。",
+                    "宅建業者は、宅地建物の売買契約について、8種制限の規定に従わなければならない。",
+                    "宅建業者は、業務に関して取得した秘密について、正当な理由がある場合に限り他人に漏らすことができる。"
+                ],
+                correctAnswer: 2,
+                basicExplanation: "宅建業者は、宅地建物の売買契約について、8種制限の規定に従わなければなりません。",
+                detailedExplanation: "宅建業法第40条から第47条の2までの規定（8種制限）により、宅建業者が売主となる宅地建物の売買契約については、買主の利益を保護するため、様々な制限が課されています。",
+                relatedArticles: ["宅建業法第40条～第47条の2"]
+            },
+            {
+                id: "takken_business_009",
+                category: "宅建業法",
+                subcategory: "8種制限",
+                difficulty: 3,
+                importance: 4,
+                questionText: "8種制限に関する次の記述のうち、正しいものはどれか。",
+                options: [
+                    "手付金等の保全措置は、手付金等の額が代金額の10%以下であれば講じる必要がない。",
+                    "損害賠償額の予定制限は、代金額の10分の2を超えることができない。",
+                    "契約不適合責任の特約制限は、引渡しの日から1年間は担保責任を負わない旨の特約を有効とする。",
+                    "自己の所有に属しない宅地建物について、自ら売主となる契約を締結することは一切禁止されている。"
+                ],
+                correctAnswer: 1,
+                basicExplanation: "損害賠償額の予定制限は、代金額の10分の2を超えることができません。",
+                detailedExplanation: "宅建業法第38条第1項により、宅建業者が売主となる宅地建物の売買契約においては、損害賠償額の予定等の額を代金額の10分の2を超えて定めることができません。",
+                relatedArticles: ["宅建業法第38条"]
+            },
+            {
+                id: "takken_business_010",
+                category: "宅建業法",
+                subcategory: "報酬",
+                difficulty: 2,
+                importance: 4,
+                questionText: "宅建業者の報酬に関する次の記述のうち、正しいものはどれか。",
+                options: [
+                    "宅建業者が受け取ることができる報酬の額は、国土交通大臣の定める額を超えることができない。",
+                    "宅建業者は、売買の媒介について成功報酬として報酬を受け取ることができるが、契約成立前に報酬を受け取ることはできない。",
+                    "宅建業者は、依頼者から依頼を受けた場合、広告費用を報酬とは別に請求することができる。",
+                    "宅建業者は、報酬の額について依頼者と合意があれば、国土交通大臣の定める額を超えることができる。"
+                ],
+                correctAnswer: 0,
+                basicExplanation: "宅建業者が受け取ることができる報酬の額は、国土交通大臣の定める額を超えることができません。",
+                detailedExplanation: "宅建業法第46条第1項により、宅建業者が売買、交換又は貸借の媒介に関して受けることができる報酬の額は、国土交通大臣の定める額を超えることができません。",
+                relatedArticles: ["宅建業法第46条"]
+            },
+            {
+                id: "takken_business_011",
+                category: "宅建業法",
+                subcategory: "監督・罰則",
+                difficulty: 3,
+                importance: 3,
+                questionText: "宅建業者に対する監督処分に関する次の記述のうち、誤っているものはどれか。",
+                options: [
+                    "国土交通大臣は、宅建業者に対して指示処分を行うことができる。",
+                    "都道府県知事は、宅建業者に対して業務停止処分を行うことができる。",
+                    "免許権者は、宅建業者に対して免許取消処分を行うことができる。",
+                    "監督処分は、宅建業者の聴聞を経なければ行うことができない。"
+                ],
+                correctAnswer: 3,
+                basicExplanation: "指示処分については聴聞を経る必要がありませんが、業務停止処分と免許取消処分については聴聞を経る必要があります。",
+                detailedExplanation: "宅建業法第71条により、業務停止処分と免許取消処分については聴聞を経る必要がありますが、指示処分については聴聞を経る必要がありません。従って、監督処分すべてについて聴聞が必要というわけではありません。",
+                relatedArticles: ["宅建業法第71条"]
+            },
+            {
+                id: "takken_business_012",
+                category: "宅建業法",
+                subcategory: "免許制度",
+                difficulty: 2,
+                importance: 3,
+                questionText: "宅建業の免許に関する次の記述のうち、正しいものはどれか。",
+                options: [
+                    "宅建業者が法人である場合、その代表者が変更になったときは、30日以内に変更の届出をしなければならない。",
+                    "宅建業者が個人である場合、その氏名が変更になったときは、遅滞なく変更の届出をしなければならない。",
+                    "宅建業者が廃業した場合、30日以内に廃業等の届出をしなければならない。",
+                    "宅建業者が死亡した場合、その相続人は60日以内に廃業等の届出をしなければならない。"
+                ],
+                correctAnswer: 2,
+                basicExplanation: "宅建業者が廃業した場合、30日以内に廃業等の届出をしなければなりません。",
+                detailedExplanation: "宅建業法第11条第1項により、宅建業者が廃業した場合、その事実があった日から30日以内に、廃業等の届出をしなければなりません。",
+                relatedArticles: ["宅建業法第11条"]
+            },
+            {
+                id: "takken_business_013",
+                category: "宅建業法",
+                subcategory: "業務規制",
+                difficulty: 2,
+                importance: 4,
+                questionText: "宅建業者の従業者に関する次の記述のうち、正しいものはどれか。",
+                options: [
+                    "宅建業者の従業者は、その従業者であることを証する書面を携帯し、関係者から請求があったときは提示しなければならない。",
+                    "宅建業者の従業者は、宅地建物取引士でなければならない。",
+                    "宅建業者の従業者は、宅建業者の監督を受けることなく、独立して業務を行うことができる。",
+                    "宅建業者の従業者は、宅地建物の売買契約について、宅建業者に代わって契約を締結することができる。"
+                ],
+                correctAnswer: 0,
+                basicExplanation: "宅建業者の従業者は、その従業者であることを証する書面を携帯し、関係者から請求があったときは提示しなければなりません。",
+                detailedExplanation: "宅建業法第48条第1項により、宅建業者の従業者は、その従業者であることを証する書面を携帯し、関係者から請求があったときは提示しなければなりません。",
+                relatedArticles: ["宅建業法第48条"]
+            },
+            {
+                id: "takken_business_014",
+                category: "宅建業法",
+                subcategory: "営業保証金",
+                difficulty: 3,
+                importance: 3,
+                questionText: "営業保証金に関する次の記述のうち、誤っているものはどれか。",
+                options: [
+                    "営業保証金は、主たる事務所については1,000万円、その他の事務所については1箇所につき500万円を供託しなければならない。",
+                    "営業保証金の供託は、主たる事務所の最寄りの供託所又は主たる事務所の所在地を管轄する法務局若しくは地方法務局の本局で行う。",
+                    "営業保証金の供託後、宅建業者は供託したことを証する書面を免許権者に提出しなければならない。",
+                    "営業保証金について弁済を受けた者は、その弁済を受けた額について宅建業者に対して権利を失う。"
+                ],
+                correctAnswer: 3,
+                basicExplanation: "営業保証金について弁済を受けた者は、その弁済を受けた額について宅建業者に対する権利を失うことはありません。",
+                detailedExplanation: "宅建業法第30条により、営業保証金について弁済を受けた者は、その弁済を受けた額について宅建業者に対する権利を失うことはありません。弁済を受けた後も、宅建業者に対する権利は存続します。",
+                relatedArticles: ["宅建業法第30条"]
+            },
+            {
+                id: "takken_business_015",
+                category: "宅建業法",
+                subcategory: "宅建士",
+                difficulty: 2,
+                importance: 5,
+                questionText: "宅地建物取引士の業務に関する次の記述のうち、正しいものはどれか。",
+                options: [
+                    "重要事項説明は、宅地建物取引士でなければ行うことができない。",
+                    "37条書面への記名押印は、宅地建物取引士でなければ行うことができない。",
+                    "宅地建物取引士は、重要事項説明を行う際、宅地建物取引士証を提示しなければならない。",
+                    "上記のすべて"
+                ],
+                correctAnswer: 3,
+                basicExplanation: "重要事項説明、37条書面への記名押印、宅地建物取引士証の提示は、いずれも宅地建物取引士の独占業務です。",
+                detailedExplanation: "宅建業法第35条により重要事項説明は宅地建物取引士の独占業務であり、同法第37条により37条書面への記名押印も宅地建物取引士の独占業務です。また、重要事項説明の際は宅地建物取引士証を提示する必要があります。",
+                relatedArticles: ["宅建業法第35条", "宅建業法第37条"]
+            },
+            {
+                id: "takken_business_016",
+                category: "宅建業法",
+                subcategory: "媒介契約",
+                difficulty: 2,
+                importance: 4,
+                questionText: "媒介契約書の記載事項に関する次の記述のうち、誤っているものはどれか。",
+                options: [
+                    "媒介契約書には、宅地建物の所在、種別、売買すべき価額又は評価額を記載しなければならない。",
+                    "媒介契約書には、媒介契約の有効期間及び解除に関する事項を記載しなければならない。",
+                    "媒介契約書には、指定流通機構への登録に関する事項を記載しなければならない。",
+                    "媒介契約書には、宅地建物取引士が記名押印しなければならない。"
+                ],
+                correctAnswer: 3,
+                basicExplanation: "媒介契約書への記名押印は、宅地建物取引士である必要はありません。",
+                detailedExplanation: "宅建業法第34条の2により、媒介契約書には宅建業者が記名押印すれば足り、宅地建物取引士である必要はありません。宅地建物取引士の記名押印が必要なのは、重要事項説明書と37条書面です。",
+                relatedArticles: ["宅建業法第34条の2"]
+            },
+            {
+                id: "takken_business_017",
+                category: "宅建業法",
+                subcategory: "重要事項説明",
+                difficulty: 3,
+                importance: 4,
+                questionText: "重要事項説明の対象となる事項に関する次の記述のうち、正しいものはどれか。",
+                options: [
+                    "売買契約の場合、代金の額及びその支払の時期は重要事項説明の対象となる。",
+                    "貸借契約の場合、敷金その他いかなる名義をもって授受される金銭の額は重要事項説明の対象となる。",
+                    "売買契約の場合、契約の解除に関する事項は重要事項説明の対象となる。",
+                    "貸借契約の場合、契約期間及び契約の更新に関する事項は重要事項説明の対象となる。"
+                ],
+                correctAnswer: 1,
+                basicExplanation: "貸借契約の場合、敷金その他いかなる名義をもって授受される金銭の額は重要事項説明の対象となります。",
+                detailedExplanation: "宅建業法第35条第1項第14号により、貸借契約の場合、敷金その他いかなる名義をもって授受される金銭の額は重要事項説明の対象となります。",
+                relatedArticles: ["宅建業法第35条"]
+            },
+            {
+                id: "takken_business_018",
+                category: "宅建業法",
+                subcategory: "8種制限",
+                difficulty: 3,
+                importance: 3,
+                questionText: "手付金等の保全措置に関する次の記述のうち、正しいものはどれか。",
+                options: [
+                    "売買代金が1,000万円以下の場合、手付金等の保全措置を講じる必要はない。",
+                    "売買代金が1,000万円を超え5,000万円以下の場合、手付金等の額が100万円を超えるときは保全措置を講じなければならない。",
+                    "売買代金が5,000万円を超える場合、手付金等の額が1,000万円を超えるときは保全措置を講じなければならない。",
+                    "手付金等の保全措置として、銀行等による保証又は保険事業者による保険を付さなければならない。"
+                ],
+                correctAnswer: 3,
+                basicExplanation: "手付金等の保全措置として、銀行等による保証又は保険事業者による保険を付さなければなりません。",
+                detailedExplanation: "宅建業法第41条の2により、手付金等の保全措置として、銀行等による保証又は保険事業者による保険を付さなければなりません。保全措置の金額基準は、完成物件と未完成物件で異なります。",
+                relatedArticles: ["宅建業法第41条の2"]
+            },
+            {
+                id: "takken_business_019",
+                category: "宅建業法",
+                subcategory: "業務規制",
+                difficulty: 2,
+                importance: 4,
+                questionText: "宅建業者の広告規制に関する次の記述のうち、正しいものはどれか。",
+                options: [
+                    "宅建業者は、宅地建物の売買契約について、契約の締結時期を限定する旨の表示をしてはならない。",
+                    "宅建業者は、宅地建物の売買契約について、著しく事実に相違する表示をしてはならない。",
+                    "宅建業者は、宅地建物の売買契約について、実際のものより著しく優良又は有利であると人を誤認させるような表示をしてはならない。",
+                    "上記のすべて"
+                ],
+                correctAnswer: 3,
+                basicExplanation: "宅建業者は、契約の締結時期を限定する表示、著しく事実に相違する表示、実際のものより著しく優良又は有利であると人を誤認させるような表示をしてはなりません。",
+                detailedExplanation: "宅建業法第32条により、宅建業者は広告について様々な制限を受けます。これらの制限は、消費者保護の観点から設けられています。",
+                relatedArticles: ["宅建業法第32条"]
+            },
+            {
+                id: "takken_business_020",
+                category: "宅建業法",
+                subcategory: "報酬",
+                difficulty: 2,
+                importance: 4,
+                questionText: "宅建業者の報酬に関する次の記述のうち、正しいものはどれか。",
+                options: [
+                    "宅建業者が媒介により受けることができる報酬の額は、売買代金の3%に60,000円を加えた額である。",
+                    "宅建業者が媒介により受けることができる報酬の額は、売買代金の3%に60,000円を加えた額に消費税を加えた額を上限とする。",
+                    "宅建業者が媒介により受けることができる報酬の額は、売買代金の3%を上限とする。",
+                    "宅建業者が媒介により受けることができる報酬の額は、売買代金の5%を上限とする。"
+                ],
+                correctAnswer: 1,
+                basicExplanation: "宅建業者が媒介により受けることができる報酬の額は、売買代金の3%に60,000円を加えた額に消費税を加えた額を上限とします。",
+                detailedExplanation: "国土交通省告示により、宅建業者が媒介により受けることができる報酬の額は、売買代金の3%に60,000円を加えた額に消費税を加えた額を上限とします。この60,000円は、200万円以下の部分の報酬率の差額調整分です。",
+                relatedArticles: ["宅建業法第46条", "国土交通省告示"]
+            },
+            {
+                id: "takken_business_021",
+                category: "宅建業法",
+                subcategory: "免許制度",
+                difficulty: 2,
+                importance: 3,
+                questionText: "宅建業者の名簿に関する次の記述のうち、正しいものはどれか。",
+                options: [
+                    "宅建業者名簿は、一般の閲覧に供さなければならない。",
+                    "宅建業者名簿には、宅建業者の免許番号を記載しなければならない。",
+                    "宅建業者名簿には、宅建業者の主たる事務所の所在地を記載しなければならない。",
+                    "上記のすべて"
+                ],
+                correctAnswer: 3,
+                basicExplanation: "宅建業者名簿は一般の閲覧に供され、免許番号や主たる事務所の所在地が記載されます。",
+                detailedExplanation: "宅建業法第8条により、宅建業者名簿は一般の閲覧に供され、同条第2項により免許番号や主たる事務所の所在地などが記載されます。",
+                relatedArticles: ["宅建業法第8条"]
+            },
+            {
+                id: "takken_business_022",
+                category: "宅建業法",
+                subcategory: "業務規制",
+                difficulty: 3,
+                importance: 3,
+                questionText: "宅建業者の帳簿に関する次の記述のうち、誤っているものはどれか。",
+                options: [
+                    "宅建業者は、業務に関する帳簿を備え、取引に関する事項を記載しなければならない。",
+                    "宅建業者は、帳簿を最後の記載をした日から5年間保存しなければならない。",
+                    "宅建業者は、帳簿を事務所ごとに備えなければならない。",
+                    "宅建業者は、帳簿の記載について、関係者から請求があったときは閲覧させなければならない。"
+                ],
+                correctAnswer: 3,
+                basicExplanation: "宅建業者は、帳簿の記載について、関係者から請求があったときは閲覧させる義務はありません。",
+                detailedExplanation: "宅建業法第49条により、宅建業者は帳簿を備え、取引に関する事項を記載し、5年間保存しなければなりませんが、関係者に対する閲覧義務は規定されていません。",
+                relatedArticles: ["宅建業法第49条"]
+            },
+            {
+                id: "takken_business_023",
+                category: "宅建業法",
+                subcategory: "業務規制",
+                difficulty: 2,
+                importance: 4,
+                questionText: "宅建業者の標識の掲示に関する次の記述のうち、正しいものはどれか。",
+                options: [
+                    "宅建業者は、事務所ごとに標識を掲示しなければならない。",
+                    "宅建業者は、案内所を設置した場合、その案内所にも標識を掲示しなければならない。",
+                    "標識には、宅建業者の商号又は名称、免許証番号、宅地建物取引士の氏名を記載しなければならない。",
+                    "上記のすべて"
+                ],
+                correctAnswer: 3,
+                basicExplanation: "宅建業者は、事務所ごとに標識を掲示し、案内所にも標識を掲示し、標識には商号又は名称、免許証番号、宅地建物取引士の氏名を記載しなければなりません。",
+                detailedExplanation: "宅建業法第50条により、宅建業者は事務所ごとに標識を掲示し、案内所にも標識を掲示する必要があります。標識には法定の事項を記載する必要があります。",
+                relatedArticles: ["宅建業法第50条"]
+            },
+            {
+                id: "takken_business_024",
+                category: "宅建業法",
+                subcategory: "8種制限",
+                difficulty: 3,
+                importance: 3,
+                questionText: "クーリング・オフに関する次の記述のうち、正しいものはどれか。",
+                options: [
+                    "クーリング・オフができる期間は、書面により告知された日から起算して7日間である。",
+                    "クーリング・オフができる期間は、書面により告知された日から起算して8日間である。",
+                    "クーリング・オフは、宅建業者の事務所で契約を締結した場合には適用されない。",
+                    "クーリング・オフは、買主から申し込みの撤回等を行った場合にのみ適用される。"
+                ],
+                correctAnswer: 1,
+                basicExplanation: "クーリング・オフができる期間は、書面により告知された日から起算して8日間です。",
+                detailedExplanation: "宅建業法第37条の2により、クーリング・オフができる期間は、書面により告知された日から起算して8日間です。また、宅建業者の事務所等で契約を締結した場合には適用されません。",
+                relatedArticles: ["宅建業法第37条の2"]
+            },
+            {
+                id: "takken_business_025",
+                category: "宅建業法",
+                subcategory: "監督・罰則",
+                difficulty: 2,
+                importance: 3,
+                questionText: "宅建業者に対する罰則に関する次の記述のうち、正しいものはどれか。",
+                options: [
+                    "無免許営業をした者は、3年以下の懲役若しくは300万円以下の罰金に処し、又はこれを併科する。",
+                    "重要事項説明を怠った者は、6月以下の懲役若しくは100万円以下の罰金に処し、又はこれを併科する。",
+                    "虚偽の重要事項説明をした者は、2年以下の懲役若しくは300万円以下の罰金に処し、又はこれを併科する。",
+                    "上記のすべて"
+                ],
+                correctAnswer: 3,
+                basicExplanation: "無免許営業、重要事項説明義務違反、虚偽の重要事項説明には、それぞれ異なる罰則が科されます。",
+                detailedExplanation: "宅建業法第79条により無免許営業には3年以下の懲役若しくは300万円以下の罰金、同法第81条により重要事項説明義務違反には6月以下の懲役若しくは100万円以下の罰金、同法第80条により虚偽の重要事項説明には2年以下の懲役若しくは300万円以下の罰金が科されます。",
+                relatedArticles: ["宅建業法第79条", "宅建業法第80条", "宅建業法第81条"]
+            }
+        ];
+
+        // アプリケーションの状態管理
+        let currentState = {
+            screen: 'home', // home, question, explanation, results, progress
+            currentQuestionIndex: 0,
+            selectedAnswer: null,
+            sessionAnswers: [],
+            sessionScore: 0,
+            sessionStartTime: null,
+            questionStartTime: null,
+            retryMode: false, // 間違えた問題のみモード
+            wrongQuestions: [] // 間違えた問題のリスト
+        };
+
+        // LocalStorage キー
+        const STORAGE_KEYS = {
+            PROGRESS: 'takken_progress',
+            SESSIONS: 'takken_sessions',
+            SETTINGS: 'takken_settings'
+        };
+
+        // 画面表示の切り替え
+        function showScreen(screenName) {
+            // 全ての画面を非表示
+            document.querySelectorAll('[id$="-screen"]').forEach(screen => {
+                screen.style.display = 'none';
+            });
+            
+            // 指定された画面を表示
+            const targetScreen = document.getElementById(screenName + '-screen');
+            if (targetScreen) {
+                targetScreen.style.display = 'block';
+            }
+            
+            currentState.screen = screenName;
+        }
+
+        // 統計データの読み込み
+        function loadStatistics() {
+            const progress = JSON.parse(localStorage.getItem(STORAGE_KEYS.PROGRESS) || '[]');
+            const sessions = JSON.parse(localStorage.getItem(STORAGE_KEYS.SESSIONS) || '[]');
+            
+            const totalQuestions = progress.length;
+            const correctAnswers = progress.filter(p => p.isCorrect).length;
+            const correctRate = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0;
+            
+            // ホーム画面の統計更新
+            document.getElementById('total-questions').textContent = totalQuestions;
+            document.getElementById('correct-answers').textContent = correctAnswers;
+            document.getElementById('correct-rate').textContent = correctRate + '%';
+            
+            // 推奨学習内容の更新
+            updateDailyRecommendation(totalQuestions, correctRate);
+            
+            // 間違えた問題ボタンの表示制御
+            updateRetryWrongButton();
+            
+            return { totalQuestions, correctAnswers, correctRate, sessions: sessions.length };
+        }
+
+        // 推奨学習内容の更新
+        function updateDailyRecommendation(totalQuestions, correctRate) {
+            const recommendation = document.getElementById('daily-recommendation');
+            
+            if (totalQuestions === 0) {
+                recommendation.textContent = '新しい問題から始めて、宅建業法の基礎を学習しましょう！';
+            } else if (totalQuestions < 10) {
+                recommendation.textContent = '基本的な問題を継続して学習しましょう。';
+            } else if (correctRate >= 80) {
+                recommendation.textContent = '素晴らしい成績です！継続して学習を続けて宅建士試験合格を目指しましょう。';
+            } else if (correctRate >= 60) {
+                recommendation.textContent = '順調に学習が進んでいます。間違えた問題を重点的に復習しましょう。';
+            } else {
+                recommendation.textContent = '基礎知識の定着に重点を置きましょう。解説をしっかり読み、理解を深めましょう。';
+            }
+        }
+
+        // 学習開始
+        function startLearning() {
+            currentState.retryMode = false;
+            currentState.wrongQuestions = [];
+            currentState.currentQuestionIndex = 0;
+            currentState.selectedAnswer = null;
+            currentState.sessionAnswers = [];
+            currentState.sessionScore = 0;
+            currentState.sessionStartTime = new Date();
+            
+            showScreen('question');
+            displayQuestion();
+        }
+
+        // 問題表示
+        function displayQuestion() {
+            const questionList = currentState.retryMode ? currentState.wrongQuestions : questions;
+            const question = questionList[currentState.currentQuestionIndex];
+            if (!question) return;
+            
+            currentState.questionStartTime = new Date();
+            currentState.selectedAnswer = null;
+            
+            // 問題情報の更新
+            const totalQuestions = questionList.length;
+            document.getElementById('question-counter').textContent = 
+                `問題 ${currentState.currentQuestionIndex + 1}/${totalQuestions}`;
+            
+            const sessionCorrect = currentState.sessionAnswers.filter(a => a.isCorrect).length;
+            const sessionTotal = currentState.sessionAnswers.length;
+            const sessionRate = sessionTotal > 0 ? Math.round((sessionCorrect / sessionTotal) * 100) : 0;
+            document.getElementById('session-score').textContent = `正答率: ${sessionRate}%`;
+            
+            // 進捗バーの更新
+            const progress = ((currentState.currentQuestionIndex + 1) / totalQuestions) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+            
+            // 問題メタ情報の更新
+            document.getElementById('question-category').textContent = 
+                `${question.category} > ${question.subcategory}`;
+            
+            const difficultyBadge = document.getElementById('difficulty-badge');
+            difficultyBadge.textContent = `難易度 ${question.difficulty}`;
+            difficultyBadge.className = `difficulty-badge difficulty-${question.difficulty}`;
+            
+            // 問題文の表示
+            document.getElementById('question-text').textContent = question.questionText;
+            
+            // 選択肢の生成
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.onclick = () => selectOption(index);
+                
+                optionElement.innerHTML = `
+                    <div class="option-number">${String.fromCharCode(65 + index)}</div>
+                    <div class="option-text">${option}</div>
+                `;
+                
+                optionsContainer.appendChild(optionElement);
+            });
+            
+            // ボタンの状態更新
+            document.getElementById('prev-btn').disabled = currentState.currentQuestionIndex === 0;
+            document.getElementById('answer-btn').disabled = true;
+        }
+
+        // 選択肢の選択
+        function selectOption(index) {
+            currentState.selectedAnswer = index;
+            
+            // 選択状態の更新
+            document.querySelectorAll('.option').forEach((option, i) => {
+                if (i === index) {
+                    option.classList.add('selected');
+                } else {
+                    option.classList.remove('selected');
+                }
+            });
+            
+            // 解答ボタンの有効化
+            document.getElementById('answer-btn').disabled = false;
+        }
+
+        // 解答の提出
+        function submitAnswer() {
+            if (currentState.selectedAnswer === null) return;
+            
+            const questionList = currentState.retryMode ? currentState.wrongQuestions : questions;
+            const question = questionList[currentState.currentQuestionIndex];
+            const isCorrect = currentState.selectedAnswer === question.correctAnswer;
+            const responseTime = currentState.questionStartTime ? 
+                Math.round((new Date() - currentState.questionStartTime) / 1000) : null;
+            
+            // セッション解答記録
+            const answerRecord = {
+                questionId: question.id,
+                questionIndex: currentState.currentQuestionIndex,
+                selectedAnswer: currentState.selectedAnswer,
+                correctAnswer: question.correctAnswer,
+                isCorrect: isCorrect,
+                responseTime: responseTime,
+                timestamp: new Date().toISOString()
+            };
+            
+            currentState.sessionAnswers.push(answerRecord);
+            
+            if (isCorrect) {
+                currentState.sessionScore++;
+            }
+            
+            // 解説画面の表示
+            showExplanation(question, isCorrect);
+        }
+
+        // 解説画面の表示
+        function showExplanation(question, isCorrect) {
+            showScreen('explanation');
+            
+            // 結果ヘッダーの更新
+            const resultHeader = document.getElementById('result-header');
+            const resultIcon = document.getElementById('result-icon');
+            const resultTitle = document.getElementById('result-title');
+            const resultDetail = document.getElementById('result-detail');
+            
+            if (isCorrect) {
+                resultHeader.className = 'result-header result-correct';
+                resultIcon.textContent = '✅';
+                resultTitle.textContent = '正解！';
+                resultDetail.textContent = `正解: ${String.fromCharCode(65 + question.correctAnswer)}`;
+            } else {
+                resultHeader.className = 'result-header result-incorrect';
+                resultIcon.textContent = '❌';
+                resultTitle.textContent = '不正解';
+                resultDetail.innerHTML = `
+                    正解: ${String.fromCharCode(65 + question.correctAnswer)}<br>
+                    あなたの解答: ${String.fromCharCode(65 + currentState.selectedAnswer)}
+                `;
+            }
+            
+            // 問題文の再表示
+            document.getElementById('explanation-question-text').textContent = question.questionText;
+            
+            // 選択肢の解説表示
+            const explanationOptionsContainer = document.getElementById('explanation-options-container');
+            explanationOptionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                
+                if (index === question.correctAnswer) {
+                    optionElement.classList.add('correct');
+                } else if (index === currentState.selectedAnswer && !isCorrect) {
+                    optionElement.classList.add('incorrect');
+                }
+                
+                optionElement.innerHTML = `
+                    <div class="option-number">${String.fromCharCode(65 + index)}</div>
+                    <div class="option-text">${option}</div>
+                    ${index === question.correctAnswer ? '<span style="margin-left: auto;">✓</span>' : ''}
+                    ${index === currentState.selectedAnswer && !isCorrect ? '<span style="margin-left: auto;">✗</span>' : ''}
+                `;
+                
+                explanationOptionsContainer.appendChild(optionElement);
+            });
+            
+            // 解説の表示
+            document.getElementById('basic-explanation').textContent = question.basicExplanation;
+            document.getElementById('detailed-explanation').textContent = question.detailedExplanation;
+            
+            // 関連条文の表示
+            const articlesList = document.getElementById('articles-list');
+            articlesList.innerHTML = '';
+            question.relatedArticles.forEach(article => {
+                const li = document.createElement('li');
+                li.textContent = article;
+                articlesList.appendChild(li);
+            });
+            
+            // 次のボタンのテキスト更新
+            const questionList = currentState.retryMode ? currentState.wrongQuestions : questions;
+            const isLastQuestion = currentState.currentQuestionIndex >= questionList.length - 1;
+            document.getElementById('next-btn-text').textContent = 
+                isLastQuestion ? '結果を見る' : '次の問題へ';
+        }
+
+        // 次の問題または結果画面へ
+        function nextQuestion() {
+            // 理解度の記録
+            const understandingLevel = document.querySelector('input[name="understanding"]:checked')?.value || '2';
+            const lastAnswer = currentState.sessionAnswers[currentState.sessionAnswers.length - 1];
+            if (lastAnswer) {
+                lastAnswer.understandingLevel = parseInt(understandingLevel);
+            }
+            
+            // 理解度ラジオボタンをリセット
+            document.querySelector('input[name="understanding"][value="2"]').checked = true;
+            
+            const questionList = currentState.retryMode ? currentState.wrongQuestions : questions;
+            if (currentState.currentQuestionIndex >= questionList.length - 1) {
+                // 最後の問題の場合、結果画面へ
+                showResults();
+            } else {
+                // 次の問題へ
+                currentState.currentQuestionIndex++;
+                showScreen('question');
+                displayQuestion();
+            }
+        }
+
+        // 前の問題へ
+        function previousQuestion() {
+            if (currentState.currentQuestionIndex > 0) {
+                currentState.currentQuestionIndex--;
+                showScreen('question');
+                displayQuestion();
+            }
+        }
+
+        // 結果画面の表示
+        function showResults() {
+            showScreen('results');
+            
+            const totalQuestions = currentState.sessionAnswers.length;
+            const correctAnswers = currentState.sessionScore;
+            const incorrectAnswers = totalQuestions - correctAnswers;
+            const correctRate = totalQuestions > 0 ? (correctAnswers / totalQuestions) : 0;
+            const percentage = Math.round(correctRate * 100);
+            
+            // スコア表示
+            document.getElementById('final-score-circle').textContent = percentage + '%';
+            document.getElementById('final-total').textContent = totalQuestions;
+            document.getElementById('final-correct').textContent = correctAnswers;
+            document.getElementById('final-incorrect').textContent = incorrectAnswers;
+            
+            // スコアメッセージ
+            let scoreTitle, scoreMessage;
+            if (correctRate >= 0.9) {
+                scoreTitle = '素晴らしい！';
+                scoreMessage = '完璧に理解できています';
+            } else if (correctRate >= 0.8) {
+                scoreTitle = 'とても良い結果です！';
+                scoreMessage = '理解度は高いレベルです';
+            } else if (correctRate >= 0.7) {
+                scoreTitle = 'まずまずの結果です';
+                scoreMessage = '基本は理解できています';
+            } else if (correctRate >= 0.6) {
+                scoreTitle = 'もう少し復習が必要です';
+                scoreMessage = '基礎知識の定着が不十分です';
+            } else {
+                scoreTitle = '基礎からしっかり学習しましょう';
+                scoreMessage = '宅建業法の基礎からじっくり学習が必要です';
+            }
+            
+            document.getElementById('final-score-title').textContent = scoreTitle;
+            document.getElementById('final-score-message').textContent = scoreMessage;
+            
+            // アドバイス
+            let advice;
+            if (correctRate >= 0.9) {
+                advice = '完璧な理解度です！引き続き他の分野の学習に進んで、宅建士試験合格を目指しましょう。';
+            } else if (correctRate >= 0.8) {
+                advice = '理解度は高いレベルです。間違えた問題を重点的に復習することで、さらに得点を伸ばせます。';
+            } else if (correctRate >= 0.7) {
+                advice = '基本は理解できています。間違えた分野をもう一度学習し、解説をしっかり読み返しましょう。';
+            } else if (correctRate >= 0.6) {
+                advice = '基礎知識の定着が不十分です。宅建業法の基本的な制度から順番に学習し直すことをお勧めします。';
+            } else {
+                advice = '宅建業法の基礎からじっくり学習する必要があります。解説を丁寧に読み、理解を深めることから始めましょう。';
+            }
+            
+            document.getElementById('final-advice').textContent = advice;
+            
+            // セッションデータの保存
+            saveSessionData();
+        }
+
+        // セッションデータの保存
+        function saveSessionData() {
+            // 個別の解答記録を保存
+            const progress = JSON.parse(localStorage.getItem(STORAGE_KEYS.PROGRESS) || '[]');
+            currentState.sessionAnswers.forEach(answer => {
+                progress.push({
+                    id: Date.now() + Math.random(), // 簡易ID
+                    questionId: answer.questionId,
+                    selectedAnswer: answer.selectedAnswer,
+                    isCorrect: answer.isCorrect,
+                    responseTime: answer.responseTime,
+                    understandingLevel: answer.understandingLevel || 2,
+                    timestamp: answer.timestamp
+                });
+            });
+            localStorage.setItem(STORAGE_KEYS.PROGRESS, JSON.stringify(progress));
+            
+            // セッション記録を保存
+            const sessions = JSON.parse(localStorage.getItem(STORAGE_KEYS.SESSIONS) || '[]');
+            const sessionRecord = {
+                id: Date.now(),
+                startTime: currentState.sessionStartTime.toISOString(),
+                endTime: new Date().toISOString(),
+                totalQuestions: currentState.sessionAnswers.length,
+                correctAnswers: currentState.sessionScore,
+                correctRate: currentState.sessionAnswers.length > 0 ? 
+                    (currentState.sessionScore / currentState.sessionAnswers.length) : 0,
+                answers: currentState.sessionAnswers
+            };
+            sessions.push(sessionRecord);
+            localStorage.setItem(STORAGE_KEYS.SESSIONS, JSON.stringify(sessions));
+        }
+
+        // 学習再開
+        function restartLearning() {
+            currentState.retryMode = false;
+            currentState.wrongQuestions = [];
+            currentState.currentQuestionIndex = 0;
+            currentState.selectedAnswer = null;
+            currentState.sessionAnswers = [];
+            currentState.sessionScore = 0;
+            currentState.sessionStartTime = new Date();
+            
+            showScreen('question');
+            displayQuestion();
+        }
+
+        // ホームに戻る
+        function goHome() {
+            loadStatistics();
+            showScreen('home');
+        }
+
+        // 間違えた問題ボタンの表示制御
+        function updateRetryWrongButton() {
+            const wrongQuestions = getWrongQuestions();
+            const retryBtn = document.getElementById('retry-wrong-btn');
+            
+            if (wrongQuestions.length > 0) {
+                retryBtn.style.display = 'inline-block';
+            } else {
+                retryBtn.style.display = 'none';
+            }
+        }
+
+        // 間違えた問題を取得
+        function getWrongQuestions() {
+            const progress = JSON.parse(localStorage.getItem(STORAGE_KEYS.PROGRESS) || '[]');
+            
+            // 問題IDごとに最新の解答結果をまとめる
+            const latestAnswers = {};
+            progress.forEach(p => {
+                if (!latestAnswers[p.questionId] || 
+                    new Date(p.timestamp) > new Date(latestAnswers[p.questionId].timestamp)) {
+                    latestAnswers[p.questionId] = p;
+                }
+            });
+            
+            // 間違えた問題のIDを抽出
+            const wrongQuestionIds = Object.values(latestAnswers)
+                .filter(answer => !answer.isCorrect)
+                .map(answer => answer.questionId);
+            
+            // 間違えた問題オブジェクトを取得
+            return questions.filter(q => wrongQuestionIds.includes(q.id));
+        }
+
+        // 間違えた問題のみで学習開始
+        function retryWrongQuestions() {
+            const wrongQuestions = getWrongQuestions();
+            
+            if (wrongQuestions.length === 0) {
+                alert('間違えた問題がありません。全ての問題から学習を開始してください。');
+                return;
+            }
+            
+            currentState.retryMode = true;
+            currentState.wrongQuestions = wrongQuestions;
+            currentState.currentQuestionIndex = 0;
+            currentState.selectedAnswer = null;
+            currentState.sessionAnswers = [];
+            currentState.sessionScore = 0;
+            currentState.sessionStartTime = new Date();
+            
+            showScreen('question');
+            displayQuestion();
+        }
+
+        // 学習履歴画面の表示
+        function showProgress() {
+            showScreen('progress');
+            loadProgressData();
+        }
+
+        // 学習履歴データの読み込み
+        function loadProgressData() {
+            const progress = JSON.parse(localStorage.getItem(STORAGE_KEYS.PROGRESS) || '[]');
+            const sessions = JSON.parse(localStorage.getItem(STORAGE_KEYS.SESSIONS) || '[]');
+            
+            // 統計タブの更新
+            const totalQuestions = progress.length;
+            const correctAnswers = progress.filter(p => p.isCorrect).length;
+            const correctRate = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0;
+            
+            document.getElementById('stats-total').textContent = totalQuestions;
+            document.getElementById('stats-correct').textContent = correctAnswers;
+            document.getElementById('stats-rate').textContent = correctRate + '%';
+            document.getElementById('stats-sessions').textContent = sessions.length;
+            
+            // アドバイスの更新
+            updateProgressAdvice(totalQuestions, correctRate);
+            
+            // セッションタブの更新
+            updateSessionsList(sessions);
+            
+            // 履歴タブの更新
+            updateHistoryList(progress);
+        }
+
+        // 進捗アドバイスの更新
+        function updateProgressAdvice(totalQuestions, correctRate) {
+            const advice = document.getElementById('progress-advice');
+            
+            if (totalQuestions === 0) {
+                advice.textContent = '学習を開始しましょう！まずは基本的な問題から始めて、宅建業法の基礎を身につけましょう。';
+            } else if (correctRate >= 80) {
+                advice.textContent = '素晴らしい成績です！この調子で継続的に学習を続けて、宅建士試験合格を目指しましょう。';
+            } else if (correctRate >= 60) {
+                advice.textContent = '順調に学習が進んでいます。間違えた問題を重点的に復習して、さらに理解を深めましょう。';
+            } else {
+                advice.textContent = '基礎知識の定着に重点を置きましょう。解説をしっかり読み、理解度を高めることが重要です。';
+            }
+        }
+
+        // セッション一覧の更新
+        function updateSessionsList(sessions) {
+            const sessionsList = document.getElementById('sessions-list');
+            
+            if (sessions.length === 0) {
+                sessionsList.innerHTML = `
+                    <p style="text-align: center; color: #666; padding: 40px;">
+                        まだ学習セッションがありません
+                    </p>
+                `;
+                return;
+            }
+            
+            sessionsList.innerHTML = '';
+            sessions.slice().reverse().forEach(session => {
+                const sessionElement = document.createElement('div');
+                sessionElement.className = 'session-item';
+                
+                const date = new Date(session.startTime);
+                const dateStr = date.toLocaleDateString('ja-JP') + ' ' + 
+                              date.toLocaleTimeString('ja-JP', {hour: '2-digit', minute: '2-digit'});
+                
+                const rate = Math.round(session.correctRate * 100);
+                const rateColor = rate >= 80 ? '#4CAF50' : rate >= 60 ? '#FF9800' : '#F44336';
+                
+                sessionElement.innerHTML = `
+                    <div>
+                        <div style="font-weight: bold;">${session.correctAnswers}/${session.totalQuestions}問正解</div>
+                        <div style="color: #666; font-size: 0.9em;">${dateStr}</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 1.5em; font-weight: bold; color: ${rateColor};">${rate}%</div>
+                    </div>
+                `;
+                
+                sessionsList.appendChild(sessionElement);
+            });
+        }
+
+        // 履歴一覧の更新
+        function updateHistoryList(progress) {
+            const historyList = document.getElementById('history-list');
+            
+            if (progress.length === 0) {
+                historyList.innerHTML = `
+                    <p style="text-align: center; color: #666; padding: 40px;">
+                        まだ解答履歴がありません
+                    </p>
+                `;
+                return;
+            }
+            
+            historyList.innerHTML = '';
+            progress.slice().reverse().slice(0, 20).forEach(record => {
+                const historyElement = document.createElement('div');
+                historyElement.className = 'history-item';
+                
+                const date = new Date(record.timestamp);
+                const dateStr = date.toLocaleDateString('ja-JP') + ' ' + 
+                              date.toLocaleTimeString('ja-JP', {hour: '2-digit', minute: '2-digit'});
+                
+                const understandingText = ['', '理解不足', 'なんとなく', '完全理解'][record.understandingLevel] || '不明';
+                const understandingColor = ['#666', '#F44336', '#FF9800', '#4CAF50'][record.understandingLevel] || '#666';
+                
+                historyElement.innerHTML = `
+                    <div>
+                        <div style="font-weight: bold;">${record.questionId}</div>
+                        <div style="color: #666; font-size: 0.9em;">
+                            解答: ${String.fromCharCode(65 + record.selectedAnswer)} | ${dateStr}
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="color: ${record.isCorrect ? '#4CAF50' : '#F44336'}; font-size: 1.2em;">
+                            ${record.isCorrect ? '✓' : '✗'}
+                        </div>
+                        <div style="color: ${understandingColor}; font-size: 0.8em;">
+                            ${understandingText}
+                        </div>
+                    </div>
+                `;
+                
+                historyList.appendChild(historyElement);
+            });
+        }
+
+        // タブの切り替え
+        function showTab(tabName) {
+            // タブボタンの更新
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // タブコンテンツの更新
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(tabName + '-tab').classList.add('active');
+        }
+
+        // 進捗のリセット
+        function resetProgress() {
+            if (confirm('すべての学習履歴を削除しますか？\nこの操作は取り消せません。')) {
+                localStorage.removeItem(STORAGE_KEYS.PROGRESS);
+                localStorage.removeItem(STORAGE_KEYS.SESSIONS);
+                loadStatistics();
+                alert('学習履歴を削除しました。');
+            }
+        }
+
+        // 初期化
+        function init() {
+            loadStatistics();
+            showScreen('home');
+        }
+
+        // ページ読み込み時の初期化
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
